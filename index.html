@@ -1,0 +1,1333 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Детектив Кекс: математичні справи</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;700;800;900&family=Rubik:wght@600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#e6f4fa; --surface:#ffffff; --surface-2:#f2f8fb; --cream:#fff8e7; --ink:#1c2a37; --muted:#526373;
+  --teal:#13998b; --teal-ink:#ffffff; --teal-soft:#d4f2ed; --blue:#2c6cc6; --blue-soft:#dce9fb;
+  --gold:#f2b632; --gold-ink:#3a2800; --gold-soft:#fff0c4; --line:#cddce6; --bubble:#ffffff;
+  --shadow:0 10px 28px rgba(18,62,92,.13);
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1a24; --surface:#162533; --surface-2:#1b2d3d; --cream:#28241a; --ink:#edf3f7; --muted:#a8b7c4;
+    --teal:#2cc0af; --teal-ink:#04211c; --teal-soft:#123732; --blue:#6ea3ef; --blue-soft:#1a2c45;
+    --gold:#f5c24c; --gold-ink:#2a1e00; --gold-soft:#3a3014; --line:#2b3f50; --bubble:#1f3243;
+    --shadow:0 10px 28px rgba(0,0,0,.45); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1a24; --surface:#162533; --surface-2:#1b2d3d; --cream:#28241a; --ink:#edf3f7; --muted:#a8b7c4;
+  --teal:#2cc0af; --teal-ink:#04211c; --teal-soft:#123732; --blue:#6ea3ef; --blue-soft:#1a2c45;
+  --gold:#f5c24c; --gold-ink:#2a1e00; --gold-soft:#3a3014; --line:#2b3f50; --bubble:#1f3243;
+  --shadow:0 10px 28px rgba(0,0,0,.45); color-scheme:dark;
+}
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*,*::before,*::after{box-sizing:inherit}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Nunito","Segoe UI",Roboto,Arial,sans-serif;font-size:clamp(18px,2.1vw,22px);line-height:1.4;font-weight:700;-webkit-tap-highlight-color:transparent;min-height:100vh}
+h1,h2,h3{font-family:"Rubik","Nunito","Segoe UI",Arial,sans-serif;margin:0 0 .4em;line-height:1.15}
+h1{font-size:clamp(30px,5vw,52px)} h2{font-size:clamp(24px,3vw,32px)} h3{font-size:clamp(20px,2.4vw,24px)}
+p{margin:.3em 0 .7em}
+button{font:inherit;color:inherit}
+:focus-visible{outline:4px solid var(--blue);outline-offset:3px}
+.wrap{max-width:1200px;margin:0 auto;padding:14px clamp(12px,2.4vw,24px) 28px}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:60px;min-width:60px;padding:10px 22px;border-radius:18px;border:0;background:var(--teal);color:var(--teal-ink);font-weight:900;font-size:clamp(18px,2.1vw,23px);cursor:pointer;box-shadow:0 5px 0 rgba(0,0,0,.18);transition:transform .08s}
+.btn:active{transform:translateY(3px);box-shadow:0 2px 0 rgba(0,0,0,.18)}
+.btn.secondary{background:var(--surface);color:var(--ink);border:2px solid var(--line);box-shadow:0 4px 0 var(--line)}
+.btn.gold{background:var(--gold);color:var(--gold-ink)}
+.btn.big{min-height:68px;padding:12px 28px;font-size:clamp(20px,2.5vw,26px)}
+.btn.small{min-height:46px;font-size:17px;padding:6px 14px;border-radius:14px}
+.btn.danger{background:#c2414b;color:#fff}
+.btn[disabled]{opacity:.45;cursor:default}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}
+.tb-title{display:flex;align-items:center;gap:12px}
+.loc-ico{font-size:40px}
+.case-name{font-family:"Rubik",sans-serif;font-size:clamp(20px,2.6vw,28px);font-weight:800}
+.progress{display:flex;align-items:center;gap:7px;margin-top:4px;font-size:22px}
+.dot{width:18px;height:18px;border-radius:50%;background:var(--line);display:inline-block}
+.dot.now{background:var(--teal);box-shadow:0 0 0 4px var(--teal-soft)}
+.dot.done{background:var(--gold)}
+
+.game-grid{display:grid;grid-template-columns:1fr;gap:16px;align-items:start}
+@media (min-width:920px){.game-grid{grid-template-columns:1.05fr 1fr}.game-grid>.scene{position:sticky;top:12px}}
+
+.scene{position:relative;border-radius:26px;overflow:hidden;height:clamp(270px,42vh,420px);box-shadow:var(--shadow);background:#bfe6f7}
+.scene svg.bg{position:absolute;inset:0;width:100%;height:100%}
+.kex{position:absolute;left:2%;bottom:-2px;width:min(36%,230px)}
+.kex svg{width:100%;height:auto;display:block;overflow:visible}
+.mood-joy{animation:hop .55s ease-in-out 2}
+@keyframes hop{50%{transform:translateY(-14px)}}
+.bubble{position:absolute;left:37%;right:3%;top:5%;max-height:62%;overflow:auto;background:var(--bubble);color:var(--ink);padding:12px 16px 12px 18px;border-radius:22px;box-shadow:var(--shadow);font-size:clamp(17px,2vw,21px);display:flex;gap:8px;align-items:flex-start}
+.bubble span{flex:1}
+.bubble::before{content:"";position:absolute;left:-12px;bottom:18px;border:12px solid transparent;border-right-color:var(--bubble);border-left:0}
+.say-btn{flex:none;width:44px;height:44px;border-radius:50%;border:2px solid var(--line);background:var(--surface-2);cursor:pointer;font-size:20px}
+.evi-obj{position:absolute;right:7%;bottom:9%;font-size:clamp(46px,7vw,72px);animation:glow 1.8s ease-in-out infinite;filter:drop-shadow(0 0 14px #ffd85c)}
+@keyframes glow{50%{filter:drop-shadow(0 0 26px #ffe58a);transform:scale(1.06)}}
+.decor{position:absolute;right:3%;bottom:4%;font-size:clamp(30px,4vw,44px);background:rgba(255,255,255,.65);border-radius:16px;padding:2px 10px}
+
+.card{background:var(--cream);border-radius:26px;padding:clamp(16px,2.4vw,26px);box-shadow:var(--shadow)}
+.card.plain{background:var(--surface)}
+.stage-label{color:var(--muted);font-size:clamp(16px,1.8vw,19px);margin-bottom:6px}
+.sim-label{display:inline-block;background:var(--blue-soft);color:var(--ink);border-radius:12px;padding:4px 12px;margin-bottom:8px;font-size:18px}
+.task-text{font-size:clamp(27px,3.4vw,36px);font-weight:900;line-height:1.3;margin-bottom:14px}
+.ans-row{display:flex;justify-content:center}
+.answer{font:inherit;font-size:clamp(34px,5vw,46px);font-weight:900;text-align:center;width:100%;max-width:280px;border-radius:18px;border:3px solid var(--line);background:var(--surface);color:var(--ink);padding:6px 10px}
+.answer:focus{border-color:var(--teal);outline:none}
+.keypad{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;max-width:330px;margin:12px auto 4px}
+.key{min-height:60px;border-radius:16px;border:2px solid var(--line);background:var(--surface);font-size:28px;font-weight:900;cursor:pointer;box-shadow:0 4px 0 var(--line)}
+.key:active{transform:translateY(3px);box-shadow:none}
+.key.blank{visibility:hidden}
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin:8px 0}
+.opt{min-height:66px;border-radius:18px;border:3px solid var(--teal);background:var(--surface);font-size:clamp(20px,2.5vw,26px);font-weight:900;cursor:pointer;padding:8px 12px}
+.opt[disabled]{opacity:.35;border-style:dashed;cursor:default}
+.order-target{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:10px}
+.slot{min-width:72px;min-height:58px;border-radius:14px;border:3px dashed var(--line);display:grid;place-items:center;padding:6px 12px;font-size:22px;color:var(--muted)}
+.slot.filled{border:3px solid var(--gold);background:var(--gold-soft);color:var(--ink);font-weight:900}
+.card-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:16px}
+.hint{display:flex;flex-direction:column;gap:2px;background:var(--teal-soft);border-radius:16px;padding:10px 16px;margin-top:10px}
+.hint b{font-size:17px;color:var(--muted)}
+.hint.lvl3{background:var(--blue-soft)}
+
+.evidence-card{text-align:center}
+.ev-big{font-size:86px;line-height:1}
+.ev-label{color:var(--muted)}
+.ev-text{font-size:clamp(20px,2.4vw,25px)}
+.pop{animation:popin .35s ease-out}
+@keyframes popin{from{transform:scale(.9);opacity:.3}}
+
+.bottombar{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:16px;background:var(--surface);border-radius:22px;padding:12px 16px;box-shadow:var(--shadow)}
+.bag-wrap{display:flex;align-items:center;gap:10px}
+.bag-ico{font-size:40px}
+.bag{display:flex;gap:8px;flex-wrap:wrap}
+.bag-slot{width:56px;height:56px;border-radius:14px;border:3px dashed var(--line);display:grid;place-items:center;font-size:30px}
+.bag-slot.full{border:3px solid var(--gold);background:var(--gold-soft);animation:popin .4s}
+.bb-actions{display:flex;gap:10px;flex-wrap:wrap}
+
+.login{max-width:900px}
+.hero{display:flex;align-items:center;gap:clamp(12px,3vw,32px);margin:10px 0 18px}
+.hero-kex{width:clamp(130px,24vw,220px);flex:none}
+.hero h1{color:var(--teal);letter-spacing:-.5px}
+.sub{font-family:"Rubik",sans-serif;font-size:clamp(20px,3vw,30px);color:var(--muted);margin:0}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:10px 0}
+.text-in{font:inherit;font-size:24px;min-height:60px;padding:8px 16px;border-radius:16px;border:3px solid var(--line);background:var(--surface);color:var(--ink);flex:1;min-width:220px}
+.chip{min-height:52px;padding:8px 16px;border-radius:26px;border:2px solid var(--line);background:var(--surface);cursor:pointer;font-weight:800}
+.chip.sel{background:var(--teal);color:var(--teal-ink);border-color:var(--teal)}
+.note{color:var(--muted);font-size:17px}
+
+.case-board{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:14px;margin-top:16px}
+.case-card{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;border:0;border-radius:22px;padding:16px;background:var(--surface);box-shadow:var(--shadow);cursor:pointer;border-top:8px solid var(--teal);min-height:200px}
+.case-card.solved{border-top-color:var(--gold)}
+.case-card.locked{opacity:.6;border-top-color:var(--line);cursor:default}
+.cc-num{color:var(--muted);font-size:16px}
+.cc-ico{font-size:44px}
+.cc-title{font-family:"Rubik",sans-serif;font-size:22px;font-weight:800;line-height:1.2}
+.cc-loc{color:var(--muted);font-size:17px}
+.cc-status{margin-top:auto;font-size:17px}
+.who{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.who-name{font-family:"Rubik",sans-serif;font-size:clamp(22px,3vw,30px);font-weight:800}
+.pill{background:var(--surface);border-radius:20px;padding:6px 14px;font-size:18px;border:2px solid var(--line)}
+.goal{margin-top:16px;background:var(--surface);border-radius:20px;padding:14px 18px;box-shadow:var(--shadow)}
+.goal-bar{height:16px;border-radius:10px;background:var(--line);overflow:hidden;margin-top:8px}
+.goal-bar i{display:block;height:100%;background:var(--gold)}
+
+.suspects{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px;margin:10px 0}
+.suspect{display:flex;flex-direction:column;align-items:center;gap:4px;border:3px solid var(--line);background:var(--surface);border-radius:20px;padding:12px;cursor:pointer;font-weight:900;font-size:19px;text-align:center}
+.suspect.static{cursor:default}
+.suspect.dim{opacity:.4}
+.sus-emoji{font-size:56px;line-height:1.1}
+.suspects.mini .sus-emoji{font-size:42px}
+.evlist{margin-top:12px;background:var(--surface);border-radius:16px;padding:10px 14px}
+.evlist summary{cursor:pointer;font-weight:900;min-height:44px;display:flex;align-items:center}
+.evlist ul{list-style:none;padding:0;margin:6px 0 0}
+.evlist li{display:flex;gap:10px;padding:8px 0;border-top:1px solid var(--line);font-size:18px}
+.evlist li>span{font-size:30px}
+.chips{display:flex;flex-wrap:wrap;gap:10px;margin:12px 0}
+
+.reveal{display:flex;gap:14px;align-items:center;background:var(--surface);border-radius:18px;padding:12px 16px;margin:10px 0}
+.big-emoji{font-size:64px}
+.sum-list{padding-left:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px}
+.sum-list li{background:var(--gold-soft);border-radius:14px;padding:6px 12px}
+.skill{font-size:clamp(19px,2.2vw,23px)}
+.badges{display:flex;flex-wrap:wrap;gap:10px}
+.badge{display:flex;align-items:center;gap:8px;background:var(--surface);border:2px solid var(--line);border-radius:18px;padding:8px 14px}
+.badge span{font-size:30px}
+.badge.new{border-color:var(--gold);background:var(--gold-soft);animation:popin .5s}
+.badge.off{opacity:.45;filter:grayscale(1)}
+.kex-note{background:var(--teal-soft);border-radius:14px;padding:10px 14px}
+
+.journal{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:14px}
+.jpage{background:var(--cream);border-radius:20px;padding:16px;box-shadow:var(--shadow);border-left:10px solid var(--teal)}
+.jpage .jill{font-size:58px}
+.jpage .sign{font-family:"Rubik",sans-serif;color:var(--blue);margin-top:8px}
+.ranks{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 18px}
+.rank{padding:8px 14px;border-radius:16px;background:var(--surface);border:2px solid var(--line)}
+.rank.on{background:var(--teal);color:var(--teal-ink);border-color:var(--teal)}
+
+.overlay{position:fixed;inset:0;background:rgba(10,25,40,.55);display:grid;place-items:center;padding:16px;z-index:50}
+.modal{background:var(--surface);color:var(--ink);border-radius:24px;padding:24px;max-width:560px;width:100%;box-shadow:var(--shadow);max-height:90vh;overflow:auto}
+.modal-actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,120px);background:var(--ink);color:var(--bg);padding:12px 20px;border-radius:16px;transition:transform .25s;z-index:60;max-width:90vw}
+#toast.show{transform:translate(-50%,0)}
+
+.confetti{position:fixed;inset:0;pointer-events:none;z-index:40;overflow:hidden}
+.confetti span{position:absolute;top:-40px;font-size:30px;animation:fall 1.8s ease-in forwards}
+@keyframes fall{to{transform:translateY(110vh) rotate(260deg);opacity:0}}
+
+/* Teacher */
+.teacher{font-size:18px;font-weight:600}
+.tabs{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+.tab{min-height:50px;padding:8px 16px;border-radius:14px;border:2px solid var(--line);background:var(--surface);cursor:pointer;font-weight:800}
+.tab.on{background:var(--teal);color:var(--teal-ink);border-color:var(--teal)}
+.tbl-wrap{overflow-x:auto;background:var(--surface);border-radius:16px;box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:900px;font-size:16px}
+th,td{padding:10px 12px;border-bottom:1px solid var(--line);text-align:left;vertical-align:top}
+th{background:var(--surface-2);font-weight:900}
+.f{display:flex;flex-direction:column;gap:4px;margin:8px 0;font-size:16px;font-weight:800;color:var(--muted);flex:1;min-width:180px}
+.f input,.f textarea,.f select{font:inherit;font-weight:600;font-size:17px;color:var(--ink);background:var(--surface);border:2px solid var(--line);border-radius:12px;padding:9px 12px;min-height:46px}
+.f textarea{resize:vertical}
+.f2,.f3,.frow{display:flex;flex-wrap:wrap;gap:10px}
+.f3 .f{min-width:220px}
+.panel{background:var(--surface);border-radius:18px;padding:16px;box-shadow:var(--shadow);margin-bottom:16px}
+.stage-ed{border:2px solid var(--line);border-radius:18px;padding:12px 14px;margin:14px 0;background:var(--surface-2)}
+.stage-ed legend{font-weight:900;padding:0 8px;font-size:19px}
+.var-ed{background:var(--surface);border-radius:14px;padding:10px 12px;margin:10px 0;border-left:6px solid var(--blue)}
+.var-head{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.code{width:100%;min-height:180px;font-family:ui-monospace,Menlo,Consolas,monospace;font-size:14px;border-radius:12px;border:2px solid var(--line);background:var(--surface);color:var(--ink);padding:10px}
+.explain{color:var(--muted);font-size:16px}
+.check-row{display:flex;align-items:center;gap:10px;margin:8px 0;min-height:44px}
+.check-row input{width:26px;height:26px}
+
+/* Простий редактор */
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
+.s-cases{display:flex;flex-wrap:wrap;gap:10px}
+.s-case{display:flex;align-items:center;gap:8px;min-height:56px;padding:8px 16px;border-radius:16px;border:2px solid var(--line);background:var(--surface);cursor:pointer;font-weight:800;font-size:17px;text-align:left}
+.s-case span{font-size:26px}
+.s-case.on{border-color:var(--teal);background:var(--teal-soft)}
+.s-bar{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px}
+.s-stage{background:var(--surface);border-radius:18px;padding:16px;box-shadow:var(--shadow);margin-bottom:16px;border-left:8px solid var(--teal)}
+.s-num{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:50%;background:var(--teal);color:var(--teal-ink);font-size:18px;margin-right:4px}
+.s-row{display:flex;flex-wrap:wrap;gap:12px;align-items:flex-start}
+.s-task{flex:3;min-width:260px}
+.s-ans{flex:1;min-width:150px;max-width:240px}
+.s-ans input{font-size:24px!important;font-weight:900!important;text-align:center}
+.s-f span{color:var(--ink);font-size:17px}
+.s-check{border-radius:12px;padding:8px 12px;margin:6px 0;background:var(--surface-2);font-size:17px}
+.s-check.ok{background:var(--teal-soft)}
+.s-check.warn{background:var(--gold-soft)}
+.s-opts{display:flex;flex-direction:column;gap:8px;margin:8px 0}
+.s-lbl{font-size:17px;font-weight:800}
+.s-opt{display:flex;align-items:center;gap:10px}
+.s-opt input[type=radio]{width:26px;height:26px;flex:none}
+.s-opt input:not([type]){font:inherit;font-size:18px;font-weight:700;border:2px solid var(--line);border-radius:12px;padding:8px 12px;min-height:46px;background:var(--surface);color:var(--ink);flex:1;max-width:420px}
+.s-emo{font-size:30px}
+.s-more{margin-top:8px;background:var(--surface-2);border-radius:12px;padding:6px 12px}
+.s-more summary{cursor:pointer;min-height:44px;display:flex;align-items:center;font-weight:800}
+@media (max-width:600px){
+  .bubble{left:34%;font-size:16px;padding:10px 12px}
+  .kex{width:38%}
+  .bag-slot{width:46px;height:46px;font-size:24px}
+}
+@media (prefers-reduced-motion: reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .confetti{display:none}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div id="modal-root"></div>
+<script id="kex-shared" type="application/json">null</script>
+<script>
+'use strict';
+/* Знімок вихідного коду сторінки (до будь-яких змін DOM) — для збереження справ для всіх пристроїв */
+const PAGE_SRC = '<!DOCTYPE html>\n' + document.documentElement.outerHTML;
+let SHARED = null; try{ SHARED = JSON.parse(document.getElementById('kex-shared').textContent); }catch(e){}
+
+/* ================= ДАНІ ================= */
+const LOC = {
+  bureau:{name:'Детективне бюро',icon:'🕵️'},
+  park:{name:'Міський парк',icon:'🌳'},
+  museum:{name:'Музей',icon:'🏛️'},
+  street:{name:'Вулиця Цифроград',icon:'🏘️'},
+  library:{name:'Бібліотека',icon:'📚'},
+  school:{name:'Школа',icon:'🏫'},
+  treasury:{name:'Таємнича скарбниця',icon:'💎'}
+};
+const DIFFS = ['базова','середня','підвищена'];
+const TYPES = {number:'Приклад / задача (число)', choice:'Вибір із варіантів', order:'Впорядкування карток'};
+const V = (difficulty,type,task,answers,hints,extra={}) => Object.assign({difficulty,type,task,answers,hints,similar:null},extra);
+const SIM = (task,answers) => ({task,answers});
+
+const DEFAULT_CASES = [
+{
+  id:'park', title:'Таємниця зниклого скарбу', location:'park', grade:'2–4 клас', unlockAfter:0,
+  badge:'Слідопит парку', badgeIcon:'🐾',
+  intro:'Привіт, {addr}! Зі свята зникла скринька з монетами для дітей. Біля фонтану бачили чотирьох мешканців. Знайдімо правду разом!',
+  skill:'Сьогодні {тобі} чудово вдавалися вирази з кількома діями та текстові задачі.',
+  stages:[
+    {evidence:'Сліди на доріжці', icon:'👣', result:'Сліди по 24 см мають лише Колючка й Руденька. Стрибунець (32 см) і Каркуша (15 см) не підходять!', variants:[
+      V('базова','number','Довжину сліду я записав загадкою: 30 − 6. Скільки це сантиметрів?',['24'],['Від 30 відніми 6. Можна рахувати назад.','Спершу 30 − 5 = 25, а потім ще мінус 1.','30 − 6 = 24. Слід має 24 см.'],{similar:SIM('Схоже завдання: 20 − 7 = ?',['13'])}),
+      V('середня','number','Довжину сліду я записав загадкою: 7 × 6 − 18. Скільки це сантиметрів?',['24'],['З якої дії почнемо?','7 × 6 = 42. Тепер 42 − 18 = ?','42 − 18 = 24. Слід має 24 см.'],{similar:SIM('Схоже завдання: 6 × 5 − 12 = ?',['18'])}),
+      V('підвищена','number','Довжину сліду я записав загадкою: (96 − 48) : 2. Скільки це сантиметрів?',['24'],['Що виконуємо спершу — дію в дужках?','96 − 48 = 48. Тепер 48 : 2 = ?','48 : 2 = 24. Слід має 24 см.'],{similar:SIM('Схоже завдання: (84 − 36) : 4 = ?',['12'])})
+    ]},
+    {evidence:'Записка біля фонтану', icon:'📝', result:'Сова бачила Колючку біля 3-го дуба, а Руденьку — біля 12-го. Головна підозрювана — Білочка Руденька!', variants:[
+      V('базова','number','На записці: «Зустрінемось біля дуба номер 7 + 5». Який номер дуба?',['12'],['Додай до 7 стільки, щоб вийшло 10, а потім решту.','7 + 3 = 10. Залишилось додати ще 2.','10 + 2 = 12. Це дуб №12.'],{similar:SIM('Схоже завдання: 6 + 5 = ?',['11'])}),
+      V('середня','number','На записці: «Зустрінемось біля дуба номер (56 : 8) + 5». Який номер дуба?',['12'],['Спершу виконай дію в дужках.','56 : 8 = 7. Тепер 7 + 5 = ?','7 + 5 = 12. Це дуб №12.'],{similar:SIM('Схоже завдання: (42 : 6) + 4 = ?',['11'])}),
+      V('підвищена','number','На записці: «Дуб номер 72 : 8 + 3 × 1». Який номер дуба?',['12'],['Пам’ятай: множення й ділення виконуємо раніше за додавання.','72 : 8 = 9, а 3 × 1 = 3. Тепер 9 + 3 = ?','9 + 3 = 12. Це дуб №12.'],{similar:SIM('Схоже завдання: 63 : 9 + 2 × 2 = ?',['11'])})
+    ]},
+    {evidence:'Карта парку', icon:'🗺️', result:'Під лавкою №27 лежить скринька з кодовим замком!', variants:[
+      V('базова','number','Лавки стоять рядами по 9. Номер останньої лавки третього ряду: 9 + 9 + 9. Яке це число?',['27'],['Додавай по черзі: спершу 9 + 9.','9 + 9 = 18. Тепер 18 + 9 = ?','18 + 9 = 27. Це лавка №27.'],{similar:SIM('Схоже завдання: 6 + 6 + 6 = ?',['18'])}),
+      V('середня','number','Біля 12-го дуба — ще записка: «У парку 4 ряди лавок, по 9 у кожному. Скринька біля останньої лавки третього ряду». Який номер цієї лавки?',['27'],['Скільки лавок у перших трьох рядах разом?','У кожному ряду 9 лавок. Порахуй 3 × 9.','3 × 9 = 27. Це лавка №27.'],{similar:SIM('Схоже: 5 рядів по 6 лавок. Номер останньої лавки другого ряду?',['12'])}),
+      V('підвищена','number','Записка: «Скринька біля лавки номер 4 × 9 − 9». Яка це лавка?',['27'],['Що виконуємо спершу — множення чи віднімання?','4 × 9 = 36. Тепер 36 − 9 = ?','36 − 9 = 27. Це лавка №27.'],{similar:SIM('Схоже завдання: 5 × 8 − 8 = ?',['32'])})
+    ]},
+    {evidence:'Кодовий замок', icon:'🔒', result:'Скринька відкрилась! Усі монети на місці, а ще — листівка, підписана лапкою білочки.', variants:[
+      V('базова','number','На замку підказка: «Код на 10 більший за 32». Який код?',['42'],['«На 10 більший» — яку дію виконуємо?','Додаємо: 32 + 10. Додай один десяток.','32 + 10 = 42. Код — 42.'],{similar:SIM('Схоже завдання: число на 10 більше за 45?',['55'])}),
+      V('середня','number','На замку підказка: «Код на 15 більший за номер лавки». Лавка — №27. Який код?',['42'],['«На 15 більший» — яку дію виконуємо?','Додаємо 27 + 15. Спершу 27 + 10 = 37.','37 + 5 = 42. Код — 42.'],{similar:SIM('Схоже завдання: число на 16 більше за 28?',['44'])}),
+      V('підвищена','number','Підказка на замку: «Код — це сума номера лавки (27) і числа 15. Він ділиться на 7 без остачі». Який код?',['42'],['Спершу знайди суму 27 + 15.','27 + 15: 27 + 10 = 37, потім ще 5.','27 + 15 = 42, і 42 : 7 = 6. Код — 42.'],{similar:SIM('Схоже завдання: 38 + 18 = ?',['56'])})
+    ]}
+  ],
+  finale:{type:'suspect', culprit:'squirrel',
+    suspects:[{id:'hedgehog',emoji:'🦔',name:'Їжачок Колючка'},{id:'squirrel',emoji:'🐿️',name:'Білочка Руденька'},{id:'rabbit',emoji:'🐰',name:'Зайчик Стрибунець'},{id:'crow',emoji:'🐦',name:'Ворона Каркуша'}],
+    fakeProofs:['Морквяний хвостик','Чорна пір’їна'],
+    reveal:'З-за дуба вийшла Білочка Руденька: «Пробачте! Я хотіла сама роздати монети дітям як сюрприз».'}
+},
+{
+  id:'museum', title:'Шифр із музею математики', location:'museum', grade:'2–4 клас', unlockAfter:1,
+  badge:'Знавець шифрів', badgeIcon:'🔐',
+  intro:'{addr} — тривога! У музеї спрацювала сигналізація, а на вітрині з’явилося повідомлення з чисел. Розшифруймо його!',
+  skill:'Сьогодні {тобі} чудово вдавалися шифри, закономірності й задачі на час.',
+  stages:[
+    {evidence:'Таблиця шифру', icon:'🔤', result:'Число 20 у таблиці шифру — це літера «П». Кекс розшифрував перше слово: ПРИХОДЬТЕ.', variants:[
+      V('базова','number','Шифр музею: 1 = А, 2 = Б, 3 = В… Номер першої літери: 10 + 10. Яке це число?',['20'],['Скільки буде, якщо до одного десятка додати ще один?','10 + 10 — це 2 десятки.','10 + 10 = 20. Це літера «П».'],{similar:SIM('Схоже завдання: 8 + 8 = ?',['16'])}),
+      V('середня','number','Шифр музею: 1 = А, 2 = Б, 3 = В… Номер першої літери: 4 × 5. Яке це число?',['20'],['Згадай таблицю множення на 5.','4 × 5 — це 5 + 5 + 5 + 5.','4 × 5 = 20. Це літера «П».'],{similar:SIM('Схоже завдання: 3 × 6 = ?',['18'])}),
+      V('підвищена','number','Шифр музею: 1 = А, 2 = Б, 3 = В… Номер першої літери: (100 − 60) : 2. Яке це число?',['20'],['Що виконуємо спершу — дію в дужках?','100 − 60 = 40. Тепер 40 : 2 = ?','40 : 2 = 20. Це літера «П».'],{similar:SIM('Схоже завдання: (90 − 30) : 3 = ?',['20'])})
+    ]},
+    {evidence:'Закономірність на стіні', icon:'🧩', result:'Правильне число відкрило потайну табличку. Друге слово: НА.', variants:[
+      V('базова','number','На стіні ряд чисел: 2, 4, 6, 8, … Яке число наступне?',['10'],['На скільки збільшується кожне число?','Кожне наступне число більше на 2.','8 + 2 = 10.'],{similar:SIM('Продовж ряд: 5, 10, 15, …',['20'])}),
+      V('середня','number','На стіні ряд чисел: 3, 6, 9, 12, … Яке число наступне?',['15'],['На скільки збільшується кожне число?','Кожне наступне число більше на 3.','12 + 3 = 15.'],{similar:SIM('Продовж ряд: 4, 8, 12, 16, …',['20'])}),
+      V('підвищена','number','На стіні ряд чисел: 1, 2, 4, 7, 11, … Яке число наступне?',['16'],['Порівняй, на скільки зростає ряд щоразу.','Додаємо 1, потім 2, потім 3, потім 4… А далі?','11 + 5 = 16.'],{similar:SIM('Продовж ряд: 2, 3, 5, 8, 12, …',['17'])})
+    ]},
+    {evidence:'Відеозапис охоронця', icon:'📹', result:'О 15:05 біля вітрини видно юного екскурсовода з пензликом. На плівці ще два слова: МАТЕМАТИЧНУ ВИСТАВКУ.', variants:[
+      V('базова','number','Охоронець почав обхід о 15:00. Повідомлення з’явилося через 5 хвилин. О котрій? Запиши так: 15:05',['15:05','1505'],['До 15:00 додай 5 хвилин.','15 годин 0 хвилин + 5 хвилин.','15:00 + 5 хв = 15:05.'],{similar:SIM('Урок почався о 9:00, розминка тривала 5 хв. О котрій вона закінчилась?',['9:05','905'])}),
+      V('середня','number','Обхід почався о 14:00 і тривав 45 хвилин. Повідомлення з’явилося через 20 хвилин після обходу. О котрій? Запиши так: 15:05',['15:05','1505'],['Спершу знайди, коли закінчився обхід.','14:00 + 45 хв = 14:45. Тепер додай ще 20 хвилин.','14:45 + 20 хв = 15:05.'],{similar:SIM('Обхід почався о 10:00 і тривав 30 хв, а через 15 хв охоронець пив чай. О котрій?',['10:45','1045'])}),
+      V('підвищена','number','Обхід почався о 13:50 і тривав 1 год 5 хв. Повідомлення з’явилося через 10 хвилин після обходу. О котрій? Запиши так: 15:05',['15:05','1505'],['Спершу знайди кінець обходу: 13:50 + 1 год.','13:50 + 1 год = 14:50, ще 5 хв — 14:55.','14:55 + 10 хв = 15:05.'],{similar:SIM('Почали о 11:40 і працювали 1 год 10 хв. О котрій закінчили?',['12:50','1250'])})
+    ]},
+    {evidence:'Складання фрази', icon:'🧾', result:'Повідомлення розшифровано: «ПРИХОДЬТЕ НА МАТЕМАТИЧНУ ВИСТАВКУ»!', variants:[
+      V('середня','order','Розклади розшифровані слова так, щоб вийшло запрошення.',[],['Яке слово просить щось зробити? Воно стоїть першим.','Початок такий: ПРИХОДЬТЕ НА …','ПРИХОДЬТЕ → НА → МАТЕМАТИЧНУ → ВИСТАВКУ'],{items:['ПРИХОДЬТЕ','НА','МАТЕМАТИЧНУ','ВИСТАВКУ']})
+    ]}
+  ],
+  finale:{type:'story', emoji:'🦊',
+    reveal:'Повідомлення залишив юний екскурсовод Лисеня Тимко. Він хотів загадково запросити всіх на нову математичну виставку! А сигналізація спрацювала, бо він випадково зачепив вітрину ліктем.'}
+},
+{
+  id:'street', title:'Хто переплутав номери будинків?', location:'street', grade:'2–4 клас', unlockAfter:0,
+  badge:'Друг листоноші', badgeIcon:'📮',
+  intro:'Доброго ранку, {addr}! Листоноша не може рознести пошту: уночі хтось перевісив таблички з номерами будинків.',
+  skill:'Сьогодні {тобі} чудово вдавалося порівнювати числа й розв’язувати задачі «на … більше» та «на … менше».',
+  stages:[
+    {evidence:'Найбільша табличка', icon:'🪧', result:'Найбільшу табличку знайдено. Вона має висіти в самому кінці вулиці.', variants:[
+      V('базова','choice','Листоноша шукає будинок із більшим номером. Який номер більший?',['74'],['Порівняй спершу десятки.','У числі 47 — 4 десятки, а в числі 74 — 7 десятків.','74 більше, ніж 47.'],{options:['47','74']}),
+      V('середня','choice','Таблички: 74, 47, 70, 57. Яка з них найбільша?',['74'],['Порівняй десятки в усіх числах.','Найбільше десятків у 74 і 70. Тепер порівняй одиниці.','74 > 70, тож найбільша — 74.'],{options:['74','47','70','57']}),
+      V('підвищена','choice','Таблички: 704, 740, 407, 470. Яка з них найбільша?',['740'],['Спершу порівняй сотні.','Найбільше сотень у 704 і 740. Тепер порівняй десятки.','740 > 704, тож найбільша — 740.'],{options:['704','740','407','470']})
+    ]},
+    {evidence:'Розповіді мешканців', icon:'💬', result:'Табличку з номером 23 повернули на будинок бобра!', variants:[
+      V('базова','number','Бобер каже: «Мій номер на 3 більший за 20». Який номер будинку бобра?',['23'],['«На 3 більший» — яку дію виконуємо?','Додаємо: 20 + 3.','20 + 3 = 23.'],{similar:SIM('Схоже завдання: число на 4 більше за 30?',['34'])}),
+      V('середня','number','Бобер каже: «Мій номер на 8 більший за 15». Який номер будинку бобра?',['23'],['«На 8 більший» — яку дію виконуємо?','15 + 8: спершу 15 + 5 = 20, потім ще 3.','20 + 3 = 23.'],{similar:SIM('Схоже завдання: число на 7 більше за 18?',['25'])}),
+      V('підвищена','number','Бобер каже: «Мій номер на 17 менший за 40». Який номер будинку бобра?',['23'],['«На 17 менший» — яку дію виконуємо?','40 − 17: спершу 40 − 10 = 30.','30 − 7 = 23.'],{similar:SIM('Схоже завдання: число на 18 менше за 50?',['32'])})
+    ]},
+    {evidence:'Свідок-сова', icon:'🦉', result:'Мешканці не винні! Таблички зірвав і переплутав вітер-пустун.', variants:[
+      V('середня','choice','Сова каже: «Уночі всі мешканці спали, двері були зачинені. Але дуже шуміла буря». Хто міг перевісити таблички?',['Сильний вітер'],['Сова каже, що всі мешканці спали. Хто ж тоді «не спав»?','Подумай, що відбувалося на вулиці вночі.','Таблички переплутав сильний вітер під час бурі.'],{options:['Кріт Копайло','Їжачиха Пампушка','Сильний вітер','Пес Барбос']})
+    ]},
+    {evidence:'Повернення табличок', icon:'🔢', result:'Усі таблички на місцях! Листоноша вже розносить пошту.', variants:[
+      V('базова','order','Розклади таблички від найменшої до найбільшої.',[],['Знайди найменше число — воно перше.','Перше — 8, потім 15…','8 → 15 → 23 → 31'],{items:['8','15','23','31']}),
+      V('середня','order','Розклади таблички від найменшої до найбільшої.',[],['Знайди найменше число — воно перше.','Перше — 15, потім 23…','15 → 23 → 47 → 70 → 74'],{items:['15','23','47','70','74']}),
+      V('підвищена','order','Розклади таблички від найменшої до найбільшої.',[],['Спершу порівняй сотні.','Перше — 407, потім 470…','407 → 470 → 704 → 740'],{items:['407','470','704','740']})
+    ]}
+  ],
+  finale:{type:'story', emoji:'🌬️',
+    reveal:'Таблички переплутав вітер-пустун під час нічної бурі, а не хтось із мешканців. Не кожна загадка має «злодія» — важливо перевіряти факти!'}
+},
+{
+  id:'library', title:'Загадка бібліотечного злодія', location:'library', grade:'3–4 клас', unlockAfter:1,
+  badge:'Друг бібліотеки', badgeIcon:'📖',
+  intro:'Тихіше, {addr}… З полиці зникла найстаріша книжка про числа. Сова-бібліотекарка каже, що хтось переписав формуляри.',
+  skill:'Сьогодні {тобі} чудово вдавалися рівняння, порівняння виразів і задачі з грошима.',
+  stages:[
+    {evidence:'Формуляри', icon:'📋', result:'Насправді видали 27 книжок, а записано лише 26. Одну книжку взяли без запису!', variants:[
+      V('базова','number','У формулярі хтось стер число: □ + 5 = 32. Яке число стерли?',['27'],['Щоб знайти невідомий доданок, від суми віднімаємо відомий.','Порахуй 32 − 5.','32 − 5 = 27.'],{similar:SIM('Схоже рівняння: □ + 4 = 21',['17'])}),
+      V('середня','number','У формулярі хтось стер число: □ + 18 = 45. Скільки книжок насправді видали?',['27'],['Щоб знайти невідомий доданок, від суми віднімаємо відомий.','Порахуй 45 − 18: спершу 45 − 10 = 35.','35 − 8 = 27.'],{similar:SIM('Схоже рівняння: □ + 19 = 44',['25'])}),
+      V('підвищена','number','У формулярі хтось стер число: □ × 3 = 81. Скільки книжок насправді видали?',['27'],['Щоб знайти невідомий множник, добуток ділимо на відомий множник.','81 : 3. Подумай: 3 × 20 = 60, а скільки ще трійок у 21?','81 : 3 = 27.'],{similar:SIM('Схоже рівняння: □ × 4 = 64',['16'])})
+    ]},
+    {evidence:'Номер полиці', icon:'📚', result:'Шукаємо на полиці А. Між книжками знайшовся чек із кав’ярні!', variants:[
+      V('базова','choice','На полиці А — 20 + 5 книжок, на полиці Б — 30 − 6. Де книжок більше? Там і шукаємо!',['Полиця А'],['Обчисли кожен вираз окремо.','20 + 5 = 25, а 30 − 6 = 24.','25 більше за 24, тож більше на полиці А.'],{options:['Полиця А','Полиця Б','Порівну']}),
+      V('середня','choice','На полиці А — 6 × 7 книжок, на полиці Б — 50 − 9. Де книжок більше? Там і шукаємо!',['Полиця А'],['Обчисли кожен вираз окремо.','6 × 7 = 42, а 50 − 9 = 41.','42 більше за 41, тож більше на полиці А.'],{options:['Полиця А','Полиця Б','Порівну']}),
+      V('підвищена','choice','На полиці А — 8 × 9 книжок, на полиці Б — 100 − 29. Де книжок більше? Там і шукаємо!',['Полиця А'],['Обчисли кожен вираз окремо.','8 × 9 = 72, а 100 − 29 = 71.','72 більше за 71, тож більше на полиці А.'],{options:['Полиця А','Полиця Б','Порівну']})
+    ]},
+    {evidence:'Чек із кав’ярні', icon:'🧾', result:'Касир пам’ятає: таку решту отримав пес у кашкеті охоронця.', variants:[
+      V('базова','number','Какао коштує 32 грн. Відвідувач дав 50 грн. Скільки решти він отримав?',['18'],['Решта — це скільки дали мінус скільки коштує покупка.','50 − 32: спершу 50 − 30 = 20.','20 − 2 = 18 грн.'],{similar:SIM('Сік коштує 23 грн, дали 40 грн. Скільки решти?',['17'])}),
+      V('середня','number','У чеку: какао 18 грн і булочка 14 грн. Відвідувач дав 50 грн. Скільки решти він отримав?',['18'],['Спершу дізнайся, скільки коштує вся покупка.','18 + 14 = 32. Тепер 50 − 32 = ?','50 − 32 = 18 грн.'],{similar:SIM('Чай 12 грн і печиво 15 грн, дали 50 грн. Скільки решти?',['23'])}),
+      V('підвищена','number','У чеку: какао 18 грн і 2 булочки по 7 грн. Відвідувач дав 50 грн. Скільки решти він отримав?',['18'],['Скільки коштують дві булочки?','2 × 7 = 14, а 18 + 14 = 32.','50 − 32 = 18 грн.'],{similar:SIM('Сік 15 грн і 3 печива по 5 грн, дали 50 грн. Скільки решти?',['20'])})
+    ]},
+    {evidence:'Шафа-сховок', icon:'🗄️', result:'Шафа відчинилася! Там книжка з новенькою підклеєною обкладинкою.', variants:[
+      V('базова','number','Кодовий замок шафи: 36 + 36. Який код?',['72'],['Додай окремо десятки й окремо одиниці.','30 + 30 = 60, а 6 + 6 = 12.','60 + 12 = 72.'],{similar:SIM('Схоже завдання: 25 + 25 = ?',['50'])}),
+      V('середня','number','Кодовий замок шафи: 9 × 8. Який код?',['72'],['Згадай таблицю множення на 9.','9 × 8 = 9 × 10 − 9 × 2.','90 − 18 = 72.'],{similar:SIM('Схоже завдання: 7 × 8 = ?',['56'])}),
+      V('підвищена','number','Кодовий замок шафи: 144 : 2. Який код?',['72'],['Поділи окремо 140 і 4.','140 : 2 = 70, а 4 : 2 = 2.','70 + 2 = 72.'],{similar:SIM('Схоже завдання: 168 : 2 = ?',['84'])})
+    ]}
+  ],
+  finale:{type:'suspect', culprit:'dog',
+    suspects:[{id:'fox',emoji:'🦊',name:'Лис Хитрик'},{id:'dog',emoji:'🐶',name:'Пес Барбос'},{id:'mouse',emoji:'🐭',name:'Мишка Сирничка'},{id:'bear',emoji:'🐻',name:'Ведмедик Бурмило'}],
+    fakeProofs:['Руда шерстинка лиса','Шматочок сиру'],
+    reveal:'Пес Барбос зніяковів: «Я взяв книжку, щоб полагодити обкладинку, і забув записати її у формуляр. Вибачте!»'}
+},
+{
+  id:'formula', title:'Справа про зниклу формулу', location:'school', grade:'3–4 клас', unlockAfter:3,
+  badge:'Майстер детективу', badgeIcon:'🏅',
+  intro:'{addr}, це наша найважча справа! Перед олімпіадою зник аркуш із чарівною формулою, що відчиняє скарбницю.',
+  skill:'Сьогодні {тобі} чудово вдавалися вирази з кількома діями, закономірності й логічні задачі.',
+  stages:[
+    {evidence:'Перший уривок', icon:'📄', result:'Знайдено перший уривок формули: «(24 + 6)».', variants:[
+      V('базова','number','Обчисли: 30 + 4 × 2 = ?',['38'],['Яку дію виконуємо першою — додавання чи множення?','Спершу множення: 4 × 2 = 8.','30 + 8 = 38.'],{similar:SIM('Схоже завдання: 20 + 3 × 3 = ?',['29'])}),
+      V('середня','number','Обчисли: 48 + 6 × 5 = ?',['78'],['Яку дію виконуємо першою — додавання чи множення?','Спершу множення: 6 × 5 = 30. Тепер 48 + 30 = ?','48 + 30 = 78.'],{similar:SIM('Схоже завдання: 35 + 4 × 6 = ?',['59'])}),
+      V('підвищена','number','Обчисли: 100 − 7 × 8 = ?',['44'],['Яку дію виконуємо першою?','Спершу множення: 7 × 8 = 56. Тепер 100 − 56 = ?','100 − 56 = 44.'],{similar:SIM('Схоже завдання: 90 − 6 × 9 = ?',['36'])})
+    ]},
+    {evidence:'Другий уривок', icon:'🧩', result:'Другий уривок формули: «× 2».', variants:[
+      V('базова','number','Продовж ряд: 5, 10, 15, 20, …',['25'],['На скільки збільшується кожне число?','Кожне число більше на 5.','20 + 5 = 25.'],{similar:SIM('Продовж ряд: 10, 20, 30, …',['40'])}),
+      V('середня','number','Продовж ряд: 3, 6, 12, 24, …',['48'],['Порівняй сусідні числа. Що з ними відбувається?','Кожне число вдвічі більше за попереднє.','24 × 2 = 48.'],{similar:SIM('Продовж ряд: 2, 4, 8, 16, …',['32'])}),
+      V('підвищена','number','Продовж ряд: 2, 6, 18, 54, …',['162'],['Порівняй сусідні числа. Що з ними відбувається?','Кожне число втричі більше за попереднє.','54 × 3 = 162.'],{similar:SIM('Продовж ряд: 1, 4, 16, …',['64'])})
+    ]},
+    {evidence:'Хто бачив аркуш?', icon:'🕵️', result:'Ой… Кекс зазирає у свій підручник — а там третій уривок: «− 10»!', variants:[
+      V('середня','choice','Мишка: «Я аркуша не бачила». Зайчик: «Останнім його тримав той, хто носить капелюх». Ведмедик капелюха не носить. Хто останнім бачив аркуш?',['Кекс'],['Хто з них носить капелюх?','Мишка й Зайчик розповідають про інших, а Ведмедик — без капелюха.','Капелюх носить… сам Кекс!'],{options:['Мишка','Зайчик','Ведмедик','Кекс']})
+    ]},
+    {evidence:'Збирання формули', icon:'🧷', result:'Формулу зібрано: (24 + 6) × 2 − 10.', variants:[
+      V('середня','order','З’єднай уривки формули в правильному порядку. Дужки стоять на початку.',[],['Що стоїть першим — дужки чи знак дії?','Після дужок іде множення.','(24 + 6) → × 2 → − 10'],{items:['(24 + 6)','× 2','− 10']})
+    ]},
+    {evidence:'Двері скарбниці', icon:'🚪', location:'treasury', result:'Двері скарбниці повільно відчиняються…', variants:[
+      V('середня','number','Обчисли чарівну формулу: (24 + 6) × 2 − 10 = ?',['50'],['Почни з дії в дужках.','24 + 6 = 30, а 30 × 2 = 60. Тепер 60 − 10 = ?','60 − 10 = 50.'],{similar:SIM('Схоже завдання: (15 + 5) × 2 − 10 = ?',['30'])})
+    ]}
+  ],
+  finale:{type:'story', emoji:'🎩',
+    reveal:'Виявилося, що формулу випадково заховав у підручник сам Кекс! Він сміється: «Ну й детектив з мене!» — і вручає {тобі} золотий значок «Майстер детективу».'}
+}
+];
+
+const RANKS = [[0,'Стажер'],[1,'Помічник'],[2,'Слідчий'],[4,'Інспектор'],[5,'Майстер детективу']];
+const CLASS_ITEMS = ['🪴 Вазон','🐠 Акваріум','🗺️ Мапа Цифрограда','🏆 Кубок класу','🔭 Телескоп'];
+const SPECIAL_BADGES = [
+  {name:'Уважний слідчий',icon:'🔎',how:'Розкрити справу без жодної підказки'},
+  {name:'Наполегливий детектив',icon:'💪',how:'Не здатися й розв’язати завдання після кількох спроб'},
+  {name:'Логік',icon:'🧠',how:'Правильно пояснити, чому обрано винуватця'}
+];
+const GENERIC_HINTS = {
+  number:['Прочитай уважно. З якої дії почнемо?','Розбий завдання на кроки й порахуй кожен окремо.','Перевір кожну дію ще раз. Правильна відповідь: {a}.'],
+  choice:['Перечитай умову. Що в ній найважливіше?','Відкинь варіанти, які точно не підходять.','Правильна відповідь: {a}.'],
+  order:['Яка картка має стояти першою?','Порівнюй картки попарно.','Правильний порядок: {a}.']
+};
+
+/* ================= УТИЛІТИ ================= */
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const clone = o => JSON.parse(JSON.stringify(o));
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];} return a; };
+const pick = a => a[Math.floor(Math.random()*a.length)];
+const rnd = (a,b) => a + Math.floor(Math.random()*(b-a+1));
+const norm = s => String(s ?? '').toLowerCase().replace(/\s+/g,'').replace(/[.,]/g,':').replace(/^0+(?=\d)/,'');
+const last = a => a[a.length-1];
+
+const STORE = 'kex-detective-v1';
+function freshDB(){ return {settings:{password:'1234',difficulty:'середня',mode:'індивідуальний',classGoal:8,sound:true,autoVoice:false,unlockAll:false,roster:[]}, cases:clone(DEFAULT_CASES), students:{}}; }
+function loadDB(){ try{ const raw=localStorage.getItem(STORE); if(raw){ const d=JSON.parse(raw); if(d && Array.isArray(d.cases) && d.settings && d.students) return d; } }catch(e){} return freshDB(); }
+function saveDB(){ try{ localStorage.setItem(STORE, JSON.stringify(DB)); }catch(e){} }
+
+let DB = loadDB();
+/* ================= СПІЛЬНЕ ЗБЕРЕЖЕННЯ ================= */
+const SHARED_KEYS=['difficulty','mode','classGoal','unlockAll','roster','sound','autoVoice'];
+function applyShared(){
+  if(!SHARED || !Array.isArray(SHARED.cases)){
+    // спільних даних ще немає: зміни, зроблені раніше на цьому пристрої, пропонуємо зберегти для всіх
+    if(!DB.pending && JSON.stringify(DB.cases)!==JSON.stringify(DEFAULT_CASES)){ DB.pending=true; saveDB(); }
+    return;
+  }
+  if(DB.pending && DB.sharedBase===SHARED.rev) return; // на цьому пристрої є новіші, ще не збережені для всіх зміни
+  if((SHARED.rev||0) < (DB.sharedBase||0)) return; // на цьому пристрої вже новіша збережена версія (GitHub ще оновлюється)
+  DB.cases = clone(SHARED.cases);
+  const s = SHARED.settings || {};
+  SHARED_KEYS.forEach(k=>{ if(k in s) DB.settings[k]=clone(s[k]); });
+  DB.settings.passHash = SHARED.passHash || null;
+  DB.sharedBase = SHARED.rev; DB.pending = false; saveDB();
+}
+applyShared();
+let IN_TEACHER = false, PUBLISHING = false;
+function markShared(){ DB.pending = true; saveDB(); }
+async function sha256(t){ try{ const b=await crypto.subtle.digest('SHA-256', new TextEncoder().encode('kex:'+t)); return [...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join(''); }catch(e){ return null; } }
+async function publishShared(stay=true){
+  if(PUBLISHING) return;
+  let art = null;
+  try{ art = (window.claude && window.claude.use) ? await window.claude.use('artifact') : null; }catch(e){ art = null; }
+  if(!art){
+    if(GH.ok()) return publishGitHub();
+    toast(GH.info() ? 'Щоб зберігати для всіх пристроїв, вставте ключ доступу GitHub у кабінеті вчителя' : 'Тут неможливо зберегти для всіх пристроїв — зміни лишаються на цьому пристрої');
+    if(IN_TEACHER) renderTeacher(true);
+    return;
+  }
+  PUBLISHING = true; if(IN_TEACHER && stay) renderTeacher(true);
+  const rev = Date.now();
+  const settings = {}; SHARED_KEYS.forEach(k=>{ settings[k]=DB.settings[k]; });
+  const json = JSON.stringify({rev, cases:DB.cases, settings, passHash:DB.settings.passHash||null}).replace(/</g,'\\u003c');
+  const html = PAGE_SRC.replace(/(<script id="kex-shared" type="application\/json">)[\s\S]*?(<\/script>)/, (m,a,b)=>a+json+b);
+  if(stay){ try{ sessionStorage.setItem('kexTeacher', JSON.stringify({t:Date.now(), tab:TTAB})); }catch(e){} }
+  DB.pending = false; DB.sharedBase = rev; saveDB();
+  try{
+    await art.publish(html);
+    toast('☁️ Зміни збережено для всіх пристроїв');
+  }catch(e){
+    DB.pending = true; saveDB(); try{ sessionStorage.removeItem('kexTeacher'); }catch(_){}
+    const c = e && e.code;
+    toast(c==='not_granted'||c==='not_writer' ? 'Зберегти для всіх пристроїв може лише власник гри — зміни лишаються на цьому пристрої'
+      : c==='conflict' ? 'Гру щойно оновлено з іншого пристрою — сторінка перезавантажиться'
+      : 'Не вдалося зберегти для всіх пристроїв. Зміни лишаються на цьому пристрої');
+  }finally{
+    PUBLISHING = false; if(IN_TEACHER) renderTeacher(true);
+  }
+}
+/* ---------- GitHub Pages: спільні справи у файлі cases.json репозиторію ---------- */
+const GH = {
+  info(){ const h=location.hostname; if(!/\.github\.io$/i.test(h)) return null; const owner=h.split('.')[0]; const seg=location.pathname.split('/').filter(Boolean)[0]||''; const repo=(seg && !/\.html?$/i.test(seg)) ? seg : h; return {owner, repo}; },
+  token(){ try{ return localStorage.getItem('kex-gh-token')||''; }catch(e){ return ''; } },
+  ok(){ return !!(this.info() && this.token()); }
+};
+function b64utf8(str){ const bytes=new TextEncoder().encode(str); let bin=''; for(const b of bytes) bin+=String.fromCharCode(b); return btoa(bin); }
+async function loadRemote(){
+  if(!GH.info()) return;
+  try{
+    const ctl=new AbortController(); const t=setTimeout(()=>ctl.abort(),4000);
+    const r=await fetch('cases.json?t='+Date.now(), {cache:'no-store', signal:ctl.signal}); clearTimeout(t);
+    if(!r.ok) return;
+    const d=await r.json();
+    if(d && Array.isArray(d.cases) && (!SHARED || (d.rev||0) > (SHARED.rev||0))){ SHARED=d; applyShared(); }
+  }catch(e){}
+}
+async function publishGitHub(){
+  const gi=GH.info(), tok=GH.token(); if(!gi || !tok || PUBLISHING) return;
+  PUBLISHING=true; if(IN_TEACHER) renderTeacher(true);
+  const rev=Date.now();
+  const settings={}; SHARED_KEYS.forEach(k=>{ settings[k]=DB.settings[k]; });
+  const body=JSON.stringify({rev, cases:DB.cases, settings, passHash:DB.settings.passHash||null});
+  const url=`https://api.github.com/repos/${gi.owner}/${gi.repo}/contents/cases.json`;
+  const hdr={'Authorization':'Bearer '+tok, 'Accept':'application/vnd.github+json'};
+  try{
+    let sha;
+    const r0=await fetch(url, {headers:hdr, cache:'no-store'});
+    if(r0.ok) sha=(await r0.json()).sha; else if(r0.status!==404) throw {status:r0.status};
+    const r=await fetch(url, {method:'PUT', headers:{...hdr,'Content-Type':'application/json'}, body:JSON.stringify({message:'Оновлення справ гри «Детектив Кекс»', content:b64utf8(body), sha})});
+    if(!r.ok) throw {status:r.status};
+    DB.pending=false; DB.sharedBase=rev; saveDB(); SHARED={rev, cases:DB.cases};
+    toast('☁️ Збережено на GitHub. На інших пристроях зміни з’являться за 1–2 хвилини');
+  }catch(e){
+    const s=e && e.status;
+    toast(s===401||s===403 ? 'GitHub не прийняв ключ доступу. Перевірте токен у кабінеті вчителя'
+      : s===404 ? 'Репозиторій не знайдено. Перевірте, чи ключ має доступ саме до цього репозиторію'
+      : 'Не вдалося зберегти на GitHub. Перевірте інтернет і спробуйте ще раз');
+  }finally{
+    PUBLISHING=false; if(IN_TEACHER) renderTeacher(true);
+  }
+}
+function ghPanel(){
+  if(!GH.info()) return '';
+  if(!GH.token()) return `<div class="panel"><p><b>Збереження для всіх пристроїв через GitHub.</b> Вставте ключ доступу (токен) GitHub з правом змінювати вміст цього репозиторію. Ключ зберігається лише на цьому пристрої.</p><div class="row" style="margin:0;align-items:flex-end"><label class="f" style="flex:1;min-width:220px"><span>Ключ доступу GitHub</span><input id="ghTok" type="password" autocomplete="off"></label><button class="btn small" data-act="ghSaveTok">Зберегти ключ</button></div></div>`;
+  return `<p class="explain">Ключ GitHub збережено на цьому пристрої. <button class="btn secondary small" data-act="ghClearTok">Видалити ключ</button></p>`;
+}
+function cloudBanner(){
+  return ghPanel() + cloudBannerMain();
+}
+function cloudBannerMain(){
+  if(PUBLISHING) return `<div class="panel">☁️ Зберігаю зміни для всіх пристроїв… Сторінка оновиться автоматично.</div>`;
+  if(DB.pending) return `<div class="panel" style="display:flex;gap:12px;align-items:center;flex-wrap:wrap"><span>Є зміни, збережені лише на цьому пристрої. Щоб учні побачили їх на будь-якому пристрої, збережіть їх для всіх.</span><button class="btn small" data-act="cloudSave">☁️ Зберегти для всіх пристроїв</button></div>`;
+  return SHARED ? `<p class="explain">☁️ Справи й налаштування класу однакові на всіх пристроях.</p>` : '';
+}
+let ME = null, RUN = null, SAY = '', LOGIN_G = 'm', LOGIN_G_TOUCHED = false, IDLE = null;
+let TTAB = 'stats', EDIT = null, EDIT_ID = null, SHARE_ID = null;
+
+function g(m,f,p){ const x = ME ? ME.gender : 'm'; return x==='f' ? f : (x==='p' ? (p ?? m) : m); }
+function addr(){ return g('напарнику','напарнице','напарники'); }
+function cap(s){ return s ? s[0].toUpperCase()+s.slice(1) : s; }
+function fill(t){ return String(t||'').replace(/^\{addr\}/, cap(addr())).replace(/\{addr\}/g, addr()).replace(/\{тобі\}/g, g('тобі','тобі','вам')); }
+function getCase(id){ return DB.cases.find(c=>c.id===id); }
+function solvedCount(st=ME){ return st ? Object.keys(st.solved||{}).filter(id=>getCase(id)).length : 0; }
+function totalSolves(st=ME){ return Object.values(st.stats||{}).reduce((a,s)=>a+(s.solves||0),0); }
+function rankOf(n){ let r=RANKS[0][1]; for(const [k,name] of RANKS) if(n>=k) r=name; return r; }
+function unlockText(n){ return n===1 ? 'після 1 розкритої справи' : `після ${n} розкритих справ`; }
+function caseUnlocked(c){ return DB.settings.unlockAll || solvedCount() >= (c.unlockAfter||0); }
+function newStudent(name,gender){ return {name,gender:gender||'m',created:Date.now(),sessions:0,replays:0,badges:[],solved:{},journal:[],progress:{},stats:{}}; }
+function statsOf(id){ ME.stats[id] = ME.stats[id] || {starts:0,solves:0,errors:0,hintsAuto:0,hintsLupa:0,timeMs:0,stageErrors:{},logic:false,culpritTries:0}; return ME.stats[id]; }
+function simOK(v){ return !!(v && v.similar && v.similar.task && v.similar.answers && v.similar.answers.length); }
+function hintText(v,i){ const h=((v.hints||[])[i]||'').trim(); if(h) return h; const a = v.type==='order' ? (v.items||[]).join(' → ') : (v.answers||[])[0]; return GENERIC_HINTS[v.type][i].replace('{a}', a ?? ''); }
+
+/* ================= ЗВУК І ОЗВУЧЕННЯ ================= */
+let actx = null;
+function tone(freqs, dur=0.12){
+  if(!DB.settings.sound) return;
+  try{
+    actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+    const t = actx.currentTime;
+    freqs.forEach((f,i)=>{ const o=actx.createOscillator(), gn=actx.createGain(); o.type='sine'; o.frequency.value=f;
+      gn.gain.setValueAtTime(0.0001,t+i*dur); gn.gain.exponentialRampToValueAtTime(0.16,t+i*dur+0.02); gn.gain.exponentialRampToValueAtTime(0.0001,t+i*dur+dur*1.7);
+      o.connect(gn).connect(actx.destination); o.start(t+i*dur); o.stop(t+i*dur+dur*1.9); });
+  }catch(e){}
+}
+const sfx = { ok:()=>tone([660,880,1046]), win:()=>tone([523,659,784,1046,1318],0.13), soft:()=>tone([392],0.08), tap:()=>tone([600],0.04) };
+function speakable(t){ return String(t||'').replace(/[\u{1F000}-\u{1FAFF}\u{2600}-\u{27BF}\u{FE0F}]/gu,'').replace(/×/g,' помножити на ').replace(/ : /g,' поділити на ').replace(/−/g,' мінус ').replace(/□/g,' віконце ').replace(/=/g,' дорівнює ').replace(/→/g,', ').replace(/\s+/g,' '); }
+function speak(text){
+  if(!('speechSynthesis' in window)) { toast('Цей браузер не вміє озвучувати текст'); return; }
+  try{ speechSynthesis.cancel(); const u=new SpeechSynthesisUtterance(speakable(text)); u.lang='uk-UA'; const uv=speechSynthesis.getVoices().find(v=>/^uk/i.test(v.lang)); if(uv) u.voice=uv; u.rate=0.95; speechSynthesis.speak(u); }catch(e){}
+}
+function autoSpeak(){ if(DB.settings.autoVoice && SAY) speak(SAY); }
+function stopSpeak(){ try{ if('speechSynthesis' in window) speechSynthesis.cancel(); }catch(e){} }
+
+/* ================= ГРАФІКА ================= */
+function kexSVG(mood='neutral'){
+  const coat='#22a99a', coatDark='#178074', fur='#9aa1aa', furDark='#6b717a', light='#ece7de', hat='#7a4a2a', hatDark='#56321b';
+  const eye=(cx,cy,rx=13,ry=16,dy=2)=>`<ellipse cx="${cx}" cy="${cy}" rx="${rx}" ry="${ry}" fill="#fff"/><ellipse cx="${cx}" cy="${cy+1}" rx="${rx*.8}" ry="${ry*.84}" fill="#3dbb6c"/><ellipse cx="${cx}" cy="${cy+dy}" rx="${rx*.38}" ry="${ry*.56}" fill="#14241b"/><circle cx="${cx-rx*.3}" cy="${cy-ry*.38+dy*.5}" r="${rx*.26}" fill="#fff"/>`;
+  let eyes=eye(74,92)+eye(126,92);
+  let mouth=`<path d="M90 117 Q95 123 100 117 Q105 123 110 117" stroke="#3a2a2a" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+  let tailD='M148 214 Q194 206 186 164', hatY=0, tilt=0, extra='';
+  let lens=`<line x1="44" y1="198" x2="28" y2="218" stroke="${hatDark}" stroke-width="7" stroke-linecap="round"/><circle cx="54" cy="184" r="15" fill="rgba(190,235,255,.55)" stroke="${hatDark}" stroke-width="5"/><circle cx="60" cy="196" r="9" fill="${fur}"/>`;
+  switch(mood){
+    case 'joy':
+      eyes=`<path d="M61 94 Q74 78 87 94" stroke="#2b2b2b" stroke-width="5" fill="none" stroke-linecap="round"/><path d="M113 94 Q126 78 139 94" stroke="#2b2b2b" stroke-width="5" fill="none" stroke-linecap="round"/>`;
+      mouth=`<path d="M86 116 Q100 136 114 116 Z" fill="#c8506a"/>`; tailD='M148 208 Q198 184 172 132'; break;
+    case 'attentive':
+      eyes=eye(74,92)+eye(126,92,19,22);
+      mouth=`<path d="M93 119 L107 119" stroke="#3a2a2a" stroke-width="3" stroke-linecap="round"/>`;
+      lens=`<circle cx="126" cy="92" r="26" fill="rgba(190,235,255,.3)" stroke="${hatDark}" stroke-width="6"/><line x1="144" y1="112" x2="160" y2="150" stroke="${hatDark}" stroke-width="8" stroke-linecap="round"/><circle cx="160" cy="154" r="10" fill="${fur}"/>`; break;
+    case 'surprised':
+      eyes=eye(74,90,15,19,0)+eye(126,90,15,19,0);
+      mouth=`<ellipse cx="100" cy="121" rx="6" ry="8" fill="#c8506a"/>`; hatY=-16;
+      extra=`<circle cx="40" cy="120" r="12" fill="${fur}"/><circle cx="160" cy="120" r="12" fill="${fur}"/>`; break;
+    case 'support':
+      eyes=eye(74,94,13,12)+eye(126,94,13,12);
+      mouth=`<path d="M89 117 Q100 127 111 117" stroke="#3a2a2a" stroke-width="3" fill="none" stroke-linecap="round"/>`; tilt=-7;
+      extra=`<path d="M146 190 Q170 182 182 196" stroke="${coat}" stroke-width="16" fill="none" stroke-linecap="round"/><ellipse cx="186" cy="198" rx="12" ry="10" fill="${fur}"/>`; break;
+    case 'thinking':
+      eyes=eye(74,92,13,16,-5)+eye(126,92,13,16,-5);
+      mouth=`<path d="M92 119 Q97 115 102 119 Q107 123 110 118" stroke="#3a2a2a" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+      extra=`<text x="168" y="34" font-size="44" font-weight="900" fill="#13998b" font-family="Rubik,Arial,sans-serif">?</text><circle cx="114" cy="140" r="11" fill="${fur}"/>`; break;
+  }
+  return `<svg class="mood-${mood}" viewBox="0 0 210 250" role="img" aria-label="Детектив Кекс">
+  <path d="${tailD}" stroke="${fur}" stroke-width="13" fill="none" stroke-linecap="round"/>
+  <path d="${tailD}" stroke="${furDark}" stroke-width="13" fill="none" stroke-linecap="butt" stroke-dasharray="6 12"/>
+  <ellipse cx="78" cy="236" rx="18" ry="10" fill="${fur}"/><ellipse cx="122" cy="236" rx="18" ry="10" fill="${fur}"/>
+  <path d="M52 234 Q46 168 100 150 Q154 168 148 234 Z" fill="${coat}"/>
+  <path d="M100 152 L70 176 L84 182 Z M100 152 L130 176 L116 182 Z" fill="${coatDark}"/>
+  <path d="M87 153 L100 198 L113 153 Z" fill="#ffffff"/>
+  <path d="M96 159 L104 159 L107 186 L100 196 L93 186 Z" fill="#5a3a26"/>
+  <line x1="100" y1="198" x2="100" y2="234" stroke="${coatDark}" stroke-width="3"/>
+  <circle cx="129" cy="190" r="11" fill="#f2b632" stroke="#c98d10" stroke-width="2"/>
+  <path d="M129 185 v10 M124 190 h10" stroke="#7a4a00" stroke-width="2.6" stroke-linecap="round"/>
+  <circle cx="122" cy="180" r="2.6" fill="#f2b632"/><circle cx="129" cy="177" r="2.6" fill="#f2b632"/><circle cx="136" cy="180" r="2.6" fill="#f2b632"/>
+  <g transform="rotate(${tilt} 100 110)">
+    <path d="M44 72 L40 20 L84 46 Z" fill="${fur}"/><path d="M51 64 L49 32 L76 48 Z" fill="#f4b6c2"/>
+    <path d="M156 72 L160 20 L116 46 Z" fill="${fur}"/><path d="M149 64 L151 32 L124 48 Z" fill="#f4b6c2"/>
+    <ellipse cx="100" cy="94" rx="66" ry="56" fill="${fur}"/>
+    <path d="M90 46 Q92 58 90 68 M100 44 L100 66 M110 46 Q108 58 110 68" stroke="${furDark}" stroke-width="5" fill="none" stroke-linecap="round"/>
+    <path d="M35 92 L50 95 M36 104 L50 104 M165 92 L150 95 M164 104 L150 104" stroke="${furDark}" stroke-width="4" stroke-linecap="round"/>
+    <ellipse cx="100" cy="117" rx="31" ry="21" fill="${light}"/>
+    ${eyes}
+    <path d="M94 107 L106 107 L100 114 Z" fill="#f08aa0"/>
+    ${mouth}
+    <path d="M72 116 L28 108 M72 121 L28 124 M128 116 L172 108 M128 121 L172 124" stroke="#4b4f55" stroke-width="2" stroke-linecap="round"/>
+    <g transform="translate(0 ${hatY})">
+      <path d="M58 46 Q60 8 100 6 Q140 8 142 46 Z" fill="${hat}"/>
+      <path d="M59 36 L141 36 L142 46 L58 46 Z" fill="${hatDark}"/>
+      <ellipse cx="100" cy="48" rx="72" ry="10" fill="${hat}"/>
+    </g>
+  </g>
+  ${lens}${extra}
+</svg>`;
+}
+function tree(x,y,k){ return `<rect x="${x-8*k}" y="${y}" width="${16*k}" height="${64*k}" rx="5" fill="#8a5a35"/><circle cx="${x}" cy="${y-12*k}" r="${48*k}" fill="#4fa64a"/><circle cx="${x-30*k}" cy="${y+8*k}" r="${32*k}" fill="#5cb556"/><circle cx="${x+30*k}" cy="${y+6*k}" r="${34*k}" fill="#58b052"/>`; }
+function sceneBG(loc){
+  let s='';
+  switch(loc){
+    case 'park':
+      s=`<defs><linearGradient id="gs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fcaf5"/><stop offset="1" stop-color="#d8f1ff"/></linearGradient></defs><rect width="800" height="400" fill="url(#gs)"/><circle cx="690" cy="70" r="38" fill="#ffd866"/><ellipse cx="200" cy="430" rx="520" ry="160" fill="#86cc63"/><ellipse cx="650" cy="440" rx="420" ry="170" fill="#74bf55"/><path d="M330 400 Q420 310 560 296 L630 296 Q500 330 470 400 Z" fill="#ead6a3"/>${tree(250,225,.8)}${tree(560,215,.9)}${tree(745,240,1.05)}<ellipse cx="420" cy="306" rx="72" ry="16" fill="#5aa8d8"/><rect x="410" y="256" width="20" height="50" rx="6" fill="#b9c7d1"/><path d="M420 256 Q400 228 394 260 M420 256 Q440 228 446 260" stroke="#9fdcff" stroke-width="5" fill="none"/><rect x="600" y="320" width="90" height="12" rx="4" fill="#8a5a35"/><rect x="608" y="332" width="8" height="20" fill="#6b4428"/><rect x="674" y="332" width="8" height="20" fill="#6b4428"/>`; break;
+    case 'museum':
+      s=`<rect width="800" height="400" fill="#f1e3c8"/><rect y="312" width="800" height="88" fill="#c89a68"/><rect x="30" y="28" width="72" height="18" fill="#e8dcc4"/><rect x="40" y="46" width="52" height="266" fill="#fffaf0"/><rect x="700" y="28" width="72" height="18" fill="#e8dcc4"/><rect x="710" y="46" width="52" height="266" fill="#fffaf0"/><rect x="250" y="60" width="150" height="110" rx="6" fill="#d9a520"/><rect x="262" y="72" width="126" height="86" fill="#7bb4e0"/><circle cx="325" cy="115" r="22" fill="#f6d36b"/><rect x="460" y="60" width="150" height="110" rx="6" fill="#d9a520"/><rect x="472" y="72" width="126" height="86" fill="#f4f0e6"/><path d="M490 140 L520 92 L550 140 Z M540 140 L565 104 L590 140 Z" fill="#4c9a8f"/><rect x="430" y="226" width="170" height="86" fill="#9fd3ef" opacity=".55" stroke="#7aa9c6" stroke-width="4"/><rect x="420" y="306" width="190" height="16" fill="#8b5e3c"/><circle cx="515" cy="268" r="16" fill="#f2b632"/>`; break;
+    case 'library': {
+      s=`<rect width="800" height="400" fill="#ecdcc0"/><rect y="330" width="800" height="70" fill="#b98458"/>`;
+      const cols=['#d1495b','#2c6cc6','#f2b632','#13998b','#8e6cc4','#e07a3e'];
+      [60,160,250].forEach((y,r)=>{ s+=`<rect x="240" y="${y+70}" width="540" height="12" fill="#7a4a2a"/>`; let x=250, i=r; while(x<770){ const h=50+((i*13)%22); s+=`<rect x="${x}" y="${y+70-h}" width="20" height="${h}" rx="2" fill="${cols[i%cols.length]}"/>`; x+=24; i++; } });
+      s+=`<rect x="20" y="40" width="190" height="130" rx="8" fill="#bfe3f5" stroke="#7a4a2a" stroke-width="10"/><line x1="115" y1="40" x2="115" y2="170" stroke="#7a4a2a" stroke-width="6"/>`; break; }
+    case 'street': {
+      s=`<defs><linearGradient id="gs" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8ccff3"/><stop offset="1" stop-color="#e2f4ff"/></linearGradient></defs><rect width="800" height="400" fill="url(#gs)"/><rect y="320" width="800" height="80" fill="#9aa3ab"/><rect y="312" width="800" height="10" fill="#d8d2c4"/>`;
+      const hs=[[250,'#f0a35e','8'],[380,'#7cc4b5','15'],[510,'#e6c45a','23'],[640,'#d98bb0','31']];
+      hs.forEach(([x,c,n])=>{ s+=`<rect x="${x}" y="190" width="110" height="122" fill="${c}"/><path d="M${x-10} 192 L${x+55} 132 L${x+120} 192 Z" fill="#9b4f3a"/><rect x="${x+15}" y="215" width="30" height="30" fill="#fff8d6"/><rect x="${x+65}" y="215" width="30" height="30" fill="#fff8d6"/><rect x="${x+40}" y="262" width="30" height="50" fill="#6b4428"/><rect x="${x+38}" y="160" width="34" height="24" rx="4" fill="#fff" stroke="#355" stroke-width="2"/><text x="${x+55}" y="178" font-size="16" font-family="Rubik,Arial" font-weight="800" text-anchor="middle" fill="#234">${n}</text>`; });
+      break; }
+    case 'school':
+      s=`<rect width="800" height="400" fill="#dcefe3"/><rect y="320" width="800" height="80" fill="#c49a6c"/><rect x="250" y="44" width="360" height="190" rx="10" fill="#2f5d4a" stroke="#8b5e3c" stroke-width="12"/><text x="290" y="110" font-size="34" font-family="Rubik,Arial" fill="#f4f7f2">3 × 4 = 12</text><text x="300" y="170" font-size="34" font-family="Rubik,Arial" fill="#f4f7f2">48 + 30 = ?</text><rect x="300" y="262" width="150" height="16" fill="#8b5e3c"/><rect x="310" y="278" width="10" height="44" fill="#6b4428"/><rect x="430" y="278" width="10" height="44" fill="#6b4428"/><rect x="520" y="262" width="150" height="16" fill="#8b5e3c"/><rect x="530" y="278" width="10" height="44" fill="#6b4428"/><rect x="650" y="278" width="10" height="44" fill="#6b4428"/><circle cx="700" cy="70" r="34" fill="#fff" stroke="#355" stroke-width="5"/><path d="M700 70 L700 48 M700 70 L716 78" stroke="#355" stroke-width="4" stroke-linecap="round"/>`; break;
+    case 'treasury':
+      s=`<defs><radialGradient id="gt" cx=".7" cy=".5" r=".8"><stop offset="0" stop-color="#4a3d8f"/><stop offset="1" stop-color="#1f1a45"/></radialGradient></defs><rect width="800" height="400" fill="url(#gt)"/><rect y="330" width="800" height="70" fill="#2b2459"/><circle cx="560" cy="210" r="130" fill="#d9a520"/><circle cx="560" cy="210" r="104" fill="#f2c443"/><circle cx="560" cy="210" r="26" fill="#a87a10"/>${[0,45,90,135].map(a=>`<rect x="552" y="120" width="16" height="180" rx="6" fill="#c08d18" transform="rotate(${a} 560 210)"/>`).join('')}<circle cx="560" cy="210" r="18" fill="#f8de85"/>${[[300,350],[330,362],[360,352],[730,356],[700,366]].map(([x,y])=>`<ellipse cx="${x}" cy="${y}" rx="14" ry="7" fill="#f2b632"/>`).join('')}<path d="M300 90 l6 14 14 6 -14 6 -6 14 -6 -14 -14 -6 14 -6z" fill="#fff6c8"/>`; break;
+    default: // bureau
+      s=`<rect width="800" height="400" fill="#f3e5cc"/><rect y="324" width="800" height="76" fill="#b98458"/><rect x="40" y="40" width="170" height="140" rx="8" fill="#bfe3f5" stroke="#7a4a2a" stroke-width="10"/><line x1="125" y1="40" x2="125" y2="180" stroke="#7a4a2a" stroke-width="6"/><rect x="290" y="40" width="290" height="180" rx="8" fill="#c99a62" stroke="#8a5b34" stroke-width="10"/><rect x="310" y="60" width="70" height="56" fill="#fff" transform="rotate(-5 345 88)"/><rect x="410" y="70" width="64" height="70" fill="#fff6a8" transform="rotate(4 442 105)"/><rect x="495" y="56" width="62" height="54" fill="#fff"/><rect x="330" y="140" width="70" height="54" fill="#d6f0ff" transform="rotate(3 365 167)"/><rect x="470" y="150" width="76" height="50" fill="#fff"/><polyline points="345,88 442,105 526,82 503,175 365,167" fill="none" stroke="#d1495b" stroke-width="3"/>${[[345,88],[442,105],[526,82],[503,175],[365,167]].map(([x,y])=>`<circle cx="${x}" cy="${y}" r="5" fill="#d1495b"/>`).join('')}<rect x="610" y="150" width="170" height="12" fill="#7a4a2a"/><circle cx="650" cy="132" r="16" fill="#f2b632"/><rect x="644" y="132" width="12" height="18" fill="#c98d10"/><rect x="690" y="110" width="26" height="40" rx="3" fill="#2c6cc6"/><rect x="722" y="116" width="22" height="34" rx="3" fill="#13998b"/>`;
+  }
+  return `<svg class="bg" viewBox="0 0 800 400" preserveAspectRatio="xMidYMid slice" aria-hidden="true">${s}</svg>`;
+}
+function scene(loc, mood, say, objIcon, extraHTML=''){
+  SAY = say || '';
+  return `<div class="scene">${sceneBG(loc)}<div class="kex">${kexSVG(mood)}</div>${say?`<div class="bubble" aria-live="polite"><span>${esc(say)}</span><button class="say-btn" data-act="speakBubble" aria-label="Озвучити репліку Кекса">🔊</button></div>`:''}${objIcon?`<div class="evi-obj" aria-hidden="true">${objIcon}</div>`:''}${extraHTML}</div>`;
+}
+
+/* ================= ІНТЕРФЕЙС: ЗАГАЛЬНЕ ================= */
+const app = document.getElementById('app');
+function show(html, keepScroll){ app.innerHTML = html; if(!keepScroll) window.scrollTo(0,0); }
+function modal(html){ document.getElementById('modal-root').innerHTML = `<div class="overlay" data-act="overlayClick"><div class="modal" role="dialog" aria-modal="true">${html}</div></div>`; const f=document.querySelector('.modal input,.modal button'); if(f) f.focus(); }
+function closeModal(){ document.getElementById('modal-root').innerHTML=''; }
+function toast(t){ let el=document.getElementById('toast'); if(!el){ el=document.createElement('div'); el.id='toast'; el.setAttribute('role','status'); document.body.appendChild(el);} el.textContent=t; el.className='show'; clearTimeout(toast._t); toast._t=setTimeout(()=>el.className='',2400); }
+function confetti(){ return `<div class="confetti" aria-hidden="true">${Array.from({length:20},()=>`<span style="left:${(Math.random()*100).toFixed(1)}%;animation-delay:${(Math.random()*.7).toFixed(2)}s">${pick(['⭐','✨','🪙','🎉','🐾'])}</span>`).join('')}</div>`; }
+
+/* ================= ВХІД ================= */
+function renderLogin(){
+  IN_TEACHER=false; ME=null; RUN=null; LOGIN_G='m'; LOGIN_G_TOUCHED=false;
+  const mode=DB.settings.mode;
+  const names = DB.settings.roster.length ? DB.settings.roster : Object.values(DB.students).map(s=>s.name);
+  const quick = names.length ? `<p class="note">Обери себе зі списку або впиши ім’я:</p><div class="chips">${names.map(n=>`<button class="chip" data-act="quickLogin" data-name="${esc(n)}">${esc(n)}</button>`).join('')}</div>` : '';
+  const genders = mode==='у парах'
+    ? `<button class="chip sel" data-act="gender" data-g="p">Ми — пара напарників</button>`
+    : `<button class="chip sel" data-act="gender" data-g="m">Я напарник</button><button class="chip" data-act="gender" data-g="f">Я напарниця</button>`;
+  if(mode==='у парах') LOGIN_G='p';
+  const front = mode==='фронтальний'
+    ? `<div class="card plain" style="margin-bottom:16px"><h2>Детективна хвилинка всім класом</h2><p>Справа відкриється на дошці, а відповідь вводить учитель.</p><button class="btn big" data-act="classLogin">Почати всім класом 🔍</button></div>` : '';
+  show(`<div class="wrap login">
+    <div class="hero"><div class="hero-kex">${kexSVG('joy')}</div><div><h1>Детектив Кекс</h1><p class="sub">математичні справи</p></div></div>
+    ${front}
+    <div class="card">
+      <h2>${mode==='у парах'?'Як вас звати, напарники?':'Як тебе звати, напарнику?'}</h2>
+      ${quick}
+      <div class="row"><input id="nm" class="text-in" maxlength="30" autocomplete="off" placeholder="${mode==='у парах'?'Наприклад: Оля і Петро':'Ім’я або псевдонім'}" aria-label="Ім’я"><button class="btn big" data-act="login">Увійти</button></div>
+      <div class="row">${genders}</div>
+      <p class="note">Лише ім’я або псевдонім — без прізвища.</p>
+    </div>
+    <div class="row" style="margin-top:18px"><button class="btn secondary small" data-act="teacherOpen">🔒 Кабінет учителя</button></div>
+  </div>`);
+  const nm=document.getElementById('nm'); if(nm) nm.addEventListener('keydown',e=>{ if(e.key==='Enter') doLogin(nm.value); });
+}
+function doLogin(name){
+  name=String(name||'').trim().replace(/\s+/g,' ').slice(0,30);
+  if(!name){ toast('Впиши ім’я або псевдонім'); return; }
+  const key=name.toLowerCase();
+  let st=DB.students[key];
+  if(!st){ st=newStudent(name,LOGIN_G); DB.students[key]=st; }
+  else if(LOGIN_G_TOUCHED || DB.settings.mode==='у парах') st.gender=LOGIN_G;
+  st.sessions=(st.sessions||0)+1; st.lastSeen=Date.now();
+  ME=st; saveDB(); renderBureau();
+}
+
+/* ================= БЮРО ================= */
+function classProgress(){
+  const total=Object.values(DB.students).reduce((a,s)=>a+totalSolves(s),0);
+  const goal=Math.max(1,DB.settings.classGoal|0||8);
+  const tiers=Math.min(CLASS_ITEMS.length,Math.floor(total/goal));
+  return {total,goal,items:CLASS_ITEMS.slice(0,tiers),next:(tiers+1)*goal,maxed:tiers>=CLASS_ITEMS.length};
+}
+function renderBureau(){
+  RUN=null; clearTimeout(IDLE); stopSpeak();
+  const n=solvedCount(), cls=classProgress();
+  const decor = cls.items.length ? `<div class="decor" title="Нагороди класу">${cls.items.map(i=>i.split(' ')[0]).join(' ')}</div>` : '';
+  const cards = DB.cases.map((c,i)=>{
+    const locked=!caseUnlocked(c), solved=ME.solved[c.id], prog=ME.progress[c.id];
+    const status = locked ? `🔒 Відкриється ${unlockText(c.unlockAfter||0)}` : solved ? `✅ Розкрито · ${c.badgeIcon} ${esc(c.badge)}` : prog ? `⏳ Етап ${Math.min(prog.stageIdx+1,c.stages.length)} з ${c.stages.length}` : '🆕 Нова справа';
+    const loc=LOC[c.location]||LOC.park;
+    return `<button class="case-card ${locked?'locked':''} ${solved?'solved':''}" data-act="openCase" data-id="${c.id}" ${locked?'aria-disabled="true"':''}><span class="cc-num">Справа ${i+1}</span><span class="cc-ico">${loc.icon}</span><span class="cc-title">${esc(c.title)}</span><span class="cc-loc">${loc.name}</span><span class="cc-status">${status}</span></button>`;
+  }).join('');
+  const pct = cls.maxed ? 100 : Math.round(100*(cls.total-(cls.next-cls.goal))/cls.goal);
+  const say = `Привіт, ${addr()}! На нас чекає нова загадкова справа!`;
+  show(`<div class="wrap">
+    <div class="topbar"><div class="who"><span class="who-name">🕵️ ${esc(ME.name)}</span><span class="pill">${esc(rankOf(n))}</span><span class="pill">⭐ ${totalSolves()}</span></div>
+      <div class="row" style="margin:0"><button class="btn secondary" data-act="journal">📒 Журнал</button><button class="btn secondary" data-act="awards">🏅 Нагороди</button><button class="btn secondary" data-act="logout">Вийти</button></div></div>
+    ${scene('bureau','neutral',say,'',decor)}
+    <h2 style="margin-top:18px">Дошка справ</h2>
+    <div class="case-board">${cards}</div>
+    <div class="goal"><b>🏫 Спільна справа класу.</b> ${cls.maxed?`Клас зібрав усі предмети для бюро: ${cls.items.join(', ')}!`:`Розкрито ${cls.total} з ${cls.next} — і в бюро з’явиться новий предмет.`}${cls.items.length&&!cls.maxed?` Уже є: ${cls.items.join(', ')}.`:''}<div class="goal-bar"><i style="width:${Math.max(0,Math.min(100,pct))}%"></i></div></div>
+  </div>`);
+  autoSpeak();
+}
+function renderIntro(id){
+  const c=getCase(id), prog=ME.progress[id], loc=LOC[c.location]||LOC.park;
+  const say=fill(c.intro);
+  const sus = c.finale.type==='suspect' ? `<h3>Підозрювані</h3><div class="suspects mini">${c.finale.suspects.map(p=>`<div class="suspect static"><span class="sus-emoji">${p.emoji}</span><span>${esc(p.name)}</span></div>`).join('')}</div>` : '';
+  show(`<div class="wrap"><div class="topbar"><button class="btn secondary" data-act="back">← До бюро</button><div class="case-name">${loc.icon} ${esc(loc.name)}</div></div>
+    <div class="game-grid">${scene(c.location,'surprised',say,'')}
+    <div class="card"><div class="stage-label">${esc(c.grade||'')}${c.grade?', ':''}етапів: ${c.stages.length}</div><h2>${esc(c.title)}</h2>${sus}
+      <div class="card-actions">${prog?`<button class="btn big" data-act="resume" data-id="${id}">Продовжити з етапу ${Math.min(prog.stageIdx+1,c.stages.length)}</button><button class="btn secondary" data-act="startNew" data-id="${id}">Почати спочатку</button>`:`<button class="btn big" data-act="startNew" data-id="${id}">Почати розслідування 🔍</button>`}</div>
+    </div></div></div>`);
+  autoSpeak();
+}
+
+/* ================= ГРА ================= */
+function startCase(id,resume,preview=false){
+  const c=getCase(id); if(!c) return;
+  const st=statsOf(id); st.starts++;
+  if(ME.solved[id] && !preview) ME.replays=(ME.replays||0)+1;
+  const prog = resume ? ME.progress[id] : null;
+  if(!resume) delete ME.progress[id];
+  RUN={caseId:id,c,stageIdx:prog?prog.stageIdx:0,found:prog?prog.stageIdx:0,errorsTotal:prog?prog.errors:0,hintsCase:prog?prog.hints:0,persisted:prog?!!prog.persisted:false,segStart:Date.now(),preview,wrongSus:[],explainMsg:''};
+  if(!preview) saveDB();
+  if(RUN.stageIdx>=c.stages.length) goFinale(); else loadStage();
+}
+function loadStage(){
+  const s=RUN.c.stages[RUN.stageIdx];
+  const want=(RUN.preview&&PREVIEW_DIFF)||DB.settings.difficulty; let pool=s.variants.filter(x=>x.difficulty===want); if(!pool.length) pool=s.variants;
+  RUN.v=pick(pool);
+  Object.assign(RUN,{errors:0,hintLevel:0,phase:'task',simErr:0,showSimAnswer:false,draft:'',dimmed:[],orderSel:[]});
+  if(RUN.v.type==='order'){ let sh=shuffle(RUN.v.items), guard=0; while(sh.join('|')===RUN.v.items.join('|') && guard++<12) sh=shuffle(RUN.v.items); RUN.shuffled=sh; }
+  RUN.mood='attentive';
+  RUN.say = RUN.stageIdx===0 ? `Почнімо, ${addr()}! Перший доказ — «${s.evidence}».` : pick(['Ось наступний доказ. Поглянь уважно!','Ми на правильному шляху! Що тут у нас?','Гм… Цікаво. Розгадаймо й це!']);
+  renderStage(); autoSpeak();
+}
+function topbarGame(c){
+  const total=c.stages.length;
+  const dots=c.stages.map((_,i)=>`<span class="dot ${(i<RUN.stageIdx||(i===RUN.stageIdx&&RUN.phase==='evidence')||RUN.stageIdx>=total)?'done':(i===RUN.stageIdx?'now':'')}"></span>`).join('');
+  const loc=LOC[(c.stages[Math.min(RUN.stageIdx,total-1)]||{}).location||c.location]||LOC.park;
+  return `<div class="topbar"><div class="tb-title"><span class="loc-ico" aria-hidden="true">${loc.icon}</span><div><div class="case-name">${esc(c.title)}${RUN.preview?' (перегляд)':''}</div><div class="progress" aria-label="Етап ${Math.min(RUN.stageIdx+1,total)} з ${total}">🔍 ${dots}</div></div></div><button class="btn secondary" data-act="pause">⏸ Пауза</button></div>`;
+}
+function hintsHTML(v){
+  const labels=['🔍 Навідне запитання','🧩 Перший крок','📖 Розв’язання'];
+  let h=''; for(let i=0;i<RUN.hintLevel;i++) h+=`<div class="hint ${i===2?'lvl3':''}"><b>${labels[i]}</b><span>${esc(fill(hintText(v,i)))}</span></div>`;
+  return h;
+}
+function keypad(time){
+  const keys=['1','2','3','4','5','6','7','8','9',time?':':'','0','⌫'];
+  return `<div class="keypad">${keys.map(k=>k?`<button class="key" data-act="key" data-k="${k}" aria-label="${k==='⌫'?'Стерти':k}">${k}</button>`:`<span class="key blank"></span>`).join('')}</div>`;
+}
+function taskCard(s,v){
+  const sim=RUN.phase==='similar';
+  const task=sim?v.similar.task:v.task;
+  let ui='';
+  if(v.type==='number'||sim){
+    const time=((sim?v.similar.answers:v.answers)||[]).some(a=>String(a).includes(':'));
+    ui=`<div class="ans-row"><input id="ans" class="answer" inputmode="none" autocomplete="off" aria-label="Відповідь" value="${esc(RUN.draft||'')}"></div>${keypad(time)}`;
+  } else if(v.type==='choice'){
+    ui=`<div class="options">${v.options.map((o,i)=>`<button class="opt" data-act="choose" data-i="${i}" ${RUN.dimmed.includes(i)?'disabled':''}>${esc(o)}</button>`).join('')}</div>`;
+  } else {
+    const sel=RUN.orderSel;
+    ui=`<div class="order-target" aria-label="Твій порядок">${v.items.map((_,i)=>`<div class="slot ${sel[i]!=null?'filled':''}">${sel[i]!=null?esc(RUN.shuffled[sel[i]]):(i+1)}</div>`).join('')}</div><div class="options">${RUN.shuffled.map((o,i)=>`<button class="opt" data-act="orderPick" data-i="${i}" ${sel.includes(i)?'disabled':''}>${esc(o)}</button>`).join('')}</div><button class="btn secondary small" data-act="orderClear">↺ Розкласти заново</button>`;
+  }
+  let actions='';
+  if(RUN.showSimAnswer) actions=`<div class="hint lvl3" style="width:100%"><b>Відповідь</b><span>${esc(v.similar.answers[0])}. ${g('Ти молодець','Ти молодець','Ви молодці')}, що не ${g('здаєшся','здаєшся','здаєтеся')}!</span></div><button class="btn big" data-act="forceNext">Далі ➜</button>`;
+  else if(!(v.type==='choice'&&!sim)) actions=`<button class="btn big" data-act="check">Перевірити ✔</button>`;
+  return `<div class="card task-card"><div class="stage-label">Етап ${RUN.stageIdx+1}: ${esc(s.evidence)}</div>${sim?'<div class="sim-label">Схоже завдання для закріплення</div>':''}<div class="task-text">${esc(fill(task))}</div>${ui}${hintsHTML(v)}<div class="card-actions">${actions}</div></div>`;
+}
+function bagHTML(){
+  const c=RUN.c;
+  const slots=c.stages.map((s,i)=>`<div class="bag-slot ${i<RUN.found?'full':''}" title="${i<RUN.found?esc(s.evidence):'Ще не знайдено'}">${i<RUN.found?s.icon:''}</div>`).join('');
+  const inStage = RUN.phase==='task'||RUN.phase==='similar';
+  return `<div class="bottombar"><div class="bag-wrap"><span class="bag-ico" aria-hidden="true">👜</span><div class="bag" aria-label="Сумка доказів: ${RUN.found} з ${c.stages.length}">${slots}</div></div><div class="bb-actions"><button class="btn gold" data-act="lupa" ${inStage?'':'disabled'}>🔍 Лупа Кекса</button><button class="btn secondary" data-act="voice">🔊 Озвучити</button></div></div>`;
+}
+function renderStage(keep){
+  const c=RUN.c, s=c.stages[RUN.stageIdx], v=RUN.v, loc=s.location||c.location;
+  const card = RUN.phase==='evidence'
+    ? `<div class="card evidence-card pop"><div class="ev-big">${s.icon}</div><div class="ev-label">Доказ знайдено</div><h2>${esc(s.evidence)}</h2><p class="ev-text">${esc(fill(s.result))}</p><div class="card-actions" style="justify-content:center"><button class="btn big" data-act="nextStage">${RUN.stageIdx+1<c.stages.length?'Далі ➜':'До розгадки ➜'}</button></div></div>`
+    : taskCard(s,v);
+  show(`<div class="wrap">${topbarGame(c)}<div class="game-grid">${scene(loc,RUN.mood,RUN.say,RUN.phase==='evidence'?'':s.icon)}${card}</div>${bagHTML()}</div>`, keep);
+  const inp=document.getElementById('ans');
+  if(inp){ inp.addEventListener('keydown',e=>{ if(e.key==='Enter'){ e.preventDefault(); check(); } }); if(!keep || window.matchMedia('(min-width:920px)').matches) inp.focus({preventScroll:true}); }
+  armIdle();
+}
+function armIdle(){
+  clearTimeout(IDLE);
+  if(!RUN || RUN.phase!=='task' || RUN.hintLevel>0) return;
+  IDLE=setTimeout(()=>{
+    if(!RUN || RUN.phase!=='task' || RUN.hintLevel>0 || document.querySelector('.overlay')) return;
+    raiseHint(1,'auto'); RUN.mood='thinking'; RUN.say='Гм… Давай подумаємо разом. Глянь на підказку.';
+    renderStage(true); autoSpeak();
+  },60000);
+}
+function raiseHint(lvl,src){
+  if(lvl<=RUN.hintLevel) return;
+  const d=lvl-RUN.hintLevel; RUN.hintLevel=lvl; RUN.hintsCase+=d;
+  const st=statsOf(RUN.caseId); if(src==='lupa') st.hintsLupa+=d; else st.hintsAuto+=d;
+}
+function check(){
+  if(!RUN || (RUN.phase!=='task'&&RUN.phase!=='similar')) return;
+  const v=RUN.v, sim=RUN.phase==='similar';
+  if(v.type==='order' && !sim){
+    if(RUN.orderSel.length<v.items.length){ RUN.say='Розклади всі картки, а тоді перевіримо.'; RUN.mood='attentive'; return renderStage(true); }
+    const given=RUN.orderSel.map(i=>RUN.shuffled[i]).join('|');
+    return given===v.items.join('|') ? onCorrect() : onWrong();
+  }
+  const inp=document.getElementById('ans'); const val=inp?inp.value:RUN.draft;
+  if(!String(val).trim()){ RUN.say='Спершу впиши відповідь. Я зачекаю!'; RUN.mood='neutral'; return renderStage(true); }
+  const answers=(sim?v.similar.answers:v.answers)||[];
+  answers.map(norm).includes(norm(val)) ? onCorrect() : onWrong();
+}
+function onCorrect(){
+  clearTimeout(IDLE);
+  const s=RUN.c.stages[RUN.stageIdx], st=statsOf(RUN.caseId);
+  st.stageErrors[s.evidence]=(st.stageErrors[s.evidence]||0)+RUN.errors;
+  if(RUN.errors>=2) RUN.persisted=true;
+  RUN.phase='evidence'; RUN.found=RUN.stageIdx+1; RUN.draft=''; RUN.mood='joy';
+  RUN.say = RUN.errors>=2
+    ? `${g('Ти не здався','Ти не здалася','Ви не здалися')} — і доказ у сумці! Оце наполегливість!`
+    : pick([`Чудово! ${g('Ти знайшов','Ти знайшла','Ви знайшли')} важливий доказ!`, `Точно! ${g('Ти уважно рахував','Ти уважно рахувала','Ви уважно рахували')}. Доказ у сумці!`, 'Так! Ще один крок до розгадки!']);
+  sfx.ok(); saveProgress(); renderStage(true); autoSpeak();
+}
+function onWrong(){
+  const st=statsOf(RUN.caseId);
+  RUN.errors++; RUN.errorsTotal++; st.errors++; sfx.soft(); RUN.draft='';
+  if(RUN.phase==='similar'){
+    RUN.simErr++; RUN.mood='support';
+    if(RUN.simErr>=2){ RUN.showSimAnswer=true; RUN.say='Нічого страшного! Поглянь на відповідь — і йдемо далі.'; }
+    else RUN.say='Гм, не збігається. Поглянь на розв’язання вище й спробуй ще.';
+    return renderStage(true);
+  }
+  const lvl=Math.min(RUN.errors,3);
+  raiseHint(lvl,'auto');
+  if(lvl===1){ RUN.mood='support'; RUN.say='Гм, не збігається. Давай уважно перевіримо підказку.'; }
+  else if(lvl===2){ RUN.mood='support'; RUN.say='Помилятися — це нормально. Ось перший крок!'; }
+  else {
+    RUN.mood='attentive';
+    if(simOK(RUN.v)){ RUN.phase='similar'; RUN.say='Розберімо разом крок за кроком. А тепер — схоже завдання!'; }
+    else RUN.say='Розберімо разом крок за кроком. Тепер спробуй ще раз.';
+  }
+  renderStage(true); autoSpeak();
+}
+function saveProgress(){
+  if(RUN.preview) return;
+  ME.progress[RUN.caseId]={stageIdx:RUN.found,errors:RUN.errorsTotal,hints:RUN.hintsCase,persisted:RUN.persisted,savedAt:Date.now()};
+  accTime();
+}
+function accTime(){ if(!RUN||!ME) return; const st=statsOf(RUN.caseId); st.timeMs+=Date.now()-RUN.segStart; RUN.segStart=Date.now(); if(!RUN.preview) saveDB(); }
+
+/* ---- фінал ---- */
+function goFinale(){
+  clearTimeout(IDLE);
+  const f=RUN.c.finale;
+  if(f.type==='suspect'){ RUN.phase='finale'; RUN.mood='attentive'; RUN.say=`Час обрати винуватця! Перевір докази в сумці, ${addr()}.`; renderSuspects(); autoSpeak(); }
+  else solveCase(false);
+}
+function renderSuspects(keep){
+  const c=RUN.c, f=c.finale;
+  const ev=c.stages.map(s=>`<li><span>${s.icon}</span><div><b>${esc(s.evidence)}</b><br>${esc(fill(s.result))}</div></li>`).join('');
+  const cards=f.suspects.map(p=>`<button class="suspect ${RUN.wrongSus.includes(p.id)?'dim':''}" data-act="pickSuspect" data-id="${esc(p.id)}"><span class="sus-emoji">${p.emoji}</span><span>${esc(p.name)}</span></button>`).join('');
+  show(`<div class="wrap">${topbarGame(c)}<div class="game-grid">${scene(c.location,RUN.mood,RUN.say,'')}<div class="card"><h2>Хто це зробив?</h2><div class="suspects">${cards}</div><details class="evlist" open><summary>👜 Сумка доказів</summary><ul>${ev}</ul></details></div></div></div>`, keep);
+}
+function renderExplain(){
+  const c=RUN.c, f=c.finale, cul=f.suspects.find(s=>s.id===f.culprit);
+  if(!RUN.proofOpts){ RUN.proofOpts=shuffle([...c.stages.map(s=>s.evidence),...(f.fakeProofs||[])]); RUN.proofSel=[]; }
+  RUN.mood='joy'; RUN.say=`Так, це ${cul.name}! А які докази на це вказали?`;
+  show(`<div class="wrap">${topbarGame(c)}<div class="game-grid">${scene(c.location,'attentive',RUN.say,'')}<div class="card"><h2>Чому саме ${esc(cul.name)}?</h2><p>Обери докази, які на це вказали. Обережно: деяких речей у нашій сумці не було!</p><div class="chips">${RUN.proofOpts.map((o,i)=>`<button class="chip ${RUN.proofSel.includes(i)?'sel':''}" data-act="proofToggle" data-i="${i}" aria-pressed="${RUN.proofSel.includes(i)}">${esc(o)}</button>`).join('')}</div><div class="card-actions"><button class="btn big" data-act="explainDone">Пояснити ✔</button></div></div></div></div>`, true);
+  autoSpeak();
+}
+function solveCase(logic){
+  accTime();
+  const c=RUN.c, id=c.id, st=statsOf(id), before=rankOf(solvedCount());
+  st.solves++; if(logic) st.logic=true;
+  const first=!ME.solved[id];
+  ME.solved[id]=ME.solved[id]||{date:Date.now(),times:0}; ME.solved[id].times++;
+  const earned=[]; const give=(name,icon)=>{ if(!ME.badges.includes(name)){ ME.badges.push(name); earned.push({name,icon}); } };
+  give(c.badge,c.badgeIcon);
+  if(RUN.hintsCase===0) give('Уважний слідчий','🔎');
+  if(RUN.persisted) give('Наполегливий детектив','💪');
+  if(logic) give('Логік','🧠');
+  if(first) ME.journal.push({caseId:id,title:c.title,date:Date.now(),badge:c.badge,badgeIcon:c.badgeIcon,loc:c.location});
+  delete ME.progress[id];
+  if(!RUN.preview) saveDB();
+  const after=rankOf(solvedCount());
+  renderSolved(earned, before!==after);
+}
+function renderSolved(earned,newRank){
+  clearTimeout(IDLE);
+  const c=RUN.c, f=c.finale, cul=f.type==='suspect'?f.suspects.find(s=>s.id===f.culprit):null;
+  const badgeHTML = earned.length ? earned.map(b=>`<div class="badge new"><span>${b.icon}</span>${esc(b.name)}</div>`).join('') : `<div class="badge"><span>${c.badgeIcon}</span>${esc(c.badge)} — уже в колекції</div>`;
+  const loc=last(c.stages).location||c.location;
+  show(`<div class="wrap">${confetti()}<div class="game-grid">${scene(loc,'joy','Справу розкрито! Це чудова командна робота!','')}
+    <div class="card"><h2>🎉 Справу розкрито!</h2>
+      <div class="reveal"><span class="big-emoji">${cul?cul.emoji:(f.emoji||'✨')}</span><p>${esc(fill(f.reveal))}</p></div>
+      ${RUN.explainMsg?`<p class="kex-note">🐾 ${esc(RUN.explainMsg)}</p>`:''}
+      <h3>Кекс підсумовує докази</h3><ul class="sum-list">${c.stages.map(s=>`<li>${s.icon} ${esc(s.evidence)}</li>`).join('')}</ul>
+      <p class="skill">${esc(fill(c.skill))}</p>
+      <h3>Нагороди</h3><div class="badges">${badgeHTML}<div class="badge"><span>⭐</span>+1 зірочка</div></div>
+      <p>${g('Твій','Твій','Ваш')} ранг: <b>${esc(rankOf(solvedCount()))}</b>${newRank?' — новий ранг! 🎖️':''}</p>
+      <div class="card-actions">${RUN.preview?`<button class="btn big" data-act="home">↩ До кабінету вчителя</button>`:`<button class="btn big" data-act="back">До бюро ➜</button><button class="btn secondary" data-act="journal">📒 Журнал</button>`}</div>
+    </div></div></div>`);
+  sfx.win(); autoSpeak();
+}
+function goHome(){
+  clearTimeout(IDLE); stopSpeak(); closeModal();
+  if(RUN && RUN.preview){ RUN=null; ME=null; renderTeacher(); }
+  else { RUN=null; if(ME) renderBureau(); else renderLogin(); }
+}
+
+/* ================= ЖУРНАЛ І НАГОРОДИ ================= */
+function renderJournal(){
+  RUN=null; clearTimeout(IDLE);
+  const pages=ME.journal.map(j=>{ const loc=LOC[j.loc]||LOC.park; const times=(ME.solved[j.caseId]||{}).times||1; return `<div class="jpage"><div class="jill">${loc.icon} ${j.badgeIcon||'🐾'}</div><h3>${esc(j.title)}</h3><p>${esc(loc.name)}</p><p class="note">Розкрито ${new Date(j.date).toLocaleDateString('uk-UA')}${times>1?`, разів: ${times}`:''}</p><p>Значок: ${esc(j.badge||'')}</p><div class="sign">✍️ Напарник: ${esc(ME.name)}</div></div>`; }).join('');
+  show(`<div class="wrap"><div class="topbar"><button class="btn secondary" data-act="back">← До бюро</button><h2 style="margin:0">📒 Детективний журнал</h2></div>
+    ${pages?`<div class="journal">${pages}</div>`:scene('bureau','support','Журнал поки порожній. Розкриймо першу справу разом!','')}</div>`);
+}
+function renderAwards(){
+  RUN=null; clearTimeout(IDLE);
+  const n=solvedCount();
+  const seen=new Set(); const all=[...DB.cases.map(c=>({name:c.badge,icon:c.badgeIcon,how:`Розкрити справу «${c.title}»`})),...SPECIAL_BADGES].filter(b=>!seen.has(b.name)&&seen.add(b.name));
+  show(`<div class="wrap"><div class="topbar"><button class="btn secondary" data-act="back">← До бюро</button><h2 style="margin:0">🏅 Полиця нагород</h2></div>
+    <div class="card plain"><h3>Ранг детектива</h3><p class="note">Ранг росте від кількості розкритих справ, а не від швидкості.</p><div class="ranks">${RANKS.map(([k,name])=>`<span class="rank ${rankOf(n)===name?'on':''}">${esc(name)}${k?` · від ${k}`:''}</span>`).join('')}</div>
+    <h3>Значки</h3><div class="badges">${all.map(b=>`<div class="badge ${ME.badges.includes(b.name)?'':'off'}" title="${esc(b.how)}"><span>${b.icon}</span><div>${esc(b.name)}<div class="note">${esc(b.how)}</div></div></div>`).join('')}</div></div></div>`);
+}
+
+/* ================= КАБІНЕТ УЧИТЕЛЯ ================= */
+function renderTeacher(keep){
+  IN_TEACHER=true; RUN=null; ME=null; clearTimeout(IDLE);
+  const tabs=[['stats','📊 Аналітика'],['cases','✏️ Завдання і сюжет'],['settings','⚙️ Налаштування'],['share','🔁 Обмін справами']];
+  let body='';
+  if(TTAB==='stats') body=statsHTML();
+  else if(TTAB==='cases') body=ADV?`<div class="row"><button class="btn secondary small" data-act="advToggle">← Простий редактор</button></div>`+editorHTML():simpleEditorHTML();
+  else if(TTAB==='settings') body=settingsHTML();
+  else body=shareHTML();
+  show(`<div class="wrap teacher"><div class="topbar"><h1 style="font-size:clamp(26px,4vw,38px)">Кабінет учителя</h1><button class="btn secondary" data-act="logout">Вийти</button></div>
+    <div class="tabs" role="tablist">${tabs.map(([k,l])=>`<button class="tab ${TTAB===k?'on':''}" role="tab" aria-selected="${TTAB===k}" data-act="ttab" data-t="${k}">${l}</button>`).join('')}</div>${cloudBanner()}${body}</div>`, keep);
+}
+function studentSummary(st){
+  let solves=0,errors=0,ha=0,hl=0,time=0,tries=0,logic=0; const stageErr=[];
+  for(const [cid,s] of Object.entries(st.stats||{})){
+    solves+=s.solves; errors+=s.errors; ha+=s.hintsAuto; hl+=s.hintsLupa; time+=s.timeMs; tries+=s.culpritTries||0; if(s.logic) logic++;
+    const c=getCase(cid);
+    for(const [k,n] of Object.entries(s.stageErrors||{})) if(n>0) stageErr.push([`${c?c.title:cid}: ${k}`,n]);
+  }
+  stageErr.sort((a,b)=>b[1]-a[1]);
+  return {name:st.name,unique:solvedCount(st),solves,errors,ha,hl,min:Math.round(time/60000),sessions:st.sessions||0,replays:st.replays||0,logic,tries,hard:stageErr.slice(0,3)};
+}
+function statsHTML(){
+  const rows=Object.entries(DB.students).map(([k,st])=>[k,studentSummary(st)]);
+  const csv=['Учень;Розкрито справ (різних);Розкриттів усього;Помилки;Підказки автоматичні;Підказки «Лупа»;Час, хв;Входів у гру;Повернень до розкритих справ;Справ із поясненням «Логік»;Невдалих виборів винуватця;Найважчі етапи']
+    .concat(rows.map(([,r])=>[r.name,r.unique,r.solves,r.errors,r.ha,r.hl,r.min,r.sessions,r.replays,r.logic,r.tries,r.hard.map(h=>`${h[0]} (${h[1]})`).join(', ')].map(x=>String(x).replace(/;/g,',')).join(';'))).join('\n');
+  const cls=classProgress();
+  return `<div class="panel"><p><b>Клас разом:</b> ${cls.total} розкриттів, предметів у бюро: ${cls.items.length} з ${CLASS_ITEMS.length}. Режим уроку: <b>${esc(DB.settings.mode)}</b>, складність: <b>${esc(DB.settings.difficulty)}</b>.</p>
+    <p class="explain">Дані зберігаються лише в браузері цього пристрою. Для дослідження пізнавального інтересу корисні: «Входів у гру» та «Повернень до розкритих справ» (добровільне повернення), співвідношення підказок і помилок (учень шукає допомогу замість відмови) та «Логік» (уміння пояснити вибір).</p></div>
+    ${rows.length?`<div class="tbl-wrap"><table><thead><tr><th>Учень</th><th>Розкрито (різних / усього)</th><th>Помилки</th><th>Підказки (авто / «Лупа»)</th><th>Час, хв</th><th>Входів</th><th>Повернень</th><th>«Логік»</th><th>Найважчі етапи</th><th></th></tr></thead><tbody>${rows.map(([k,r])=>`<tr><td><b>${esc(r.name)}</b></td><td>${r.unique} / ${r.solves}</td><td>${r.errors}</td><td>${r.ha} / ${r.hl}</td><td>${r.min}</td><td>${r.sessions}</td><td>${r.replays}</td><td>${r.logic}</td><td>${r.hard.length?r.hard.map(h=>`${esc(h[0])} — ${h[1]}`).join('<br>'):'—'}</td><td><button class="btn secondary small" data-act="delStudent" data-k="${esc(k)}">Видалити</button></td></tr>`).join('')}</tbody></table></div>
+    <div class="panel" style="margin-top:16px"><h3>Таблиця для Excel</h3><p class="explain">Скопіюйте й вставте в Excel або Google Таблиці (розділювач — крапка з комою).</p><textarea class="code" id="csvBox" readonly>${esc(csv)}</textarea><div class="row"><button class="btn small" data-act="copyText" data-src="csvBox">📋 Скопіювати</button></div></div>`
+    :`<div class="panel"><p>Ще ніхто не грав на цьому пристрої. Коли учні розкриватимуть справи, тут з’явиться статистика.</p></div>`}`;
+}
+function settingsHTML(){
+  const s=DB.settings;
+  const sel=(id,val,opts)=>`<select id="${id}">${opts.map(o=>`<option ${o===val?'selected':''}>${o}</option>`).join('')}</select>`;
+  return `<div class="panel"><div class="frow">
+      <label class="f"><span>Рівень складності для класу</span>${sel('sDiff',s.difficulty,DIFFS)}</label>
+      <label class="f"><span>Режим уроку</span>${sel('sMode',s.mode,['індивідуальний','у парах','фронтальний'])}</label>
+      <label class="f"><span>Спільна нагорода класу: розкриттів на один предмет</span><input id="sGoal" type="number" min="1" max="200" value="${s.classGoal}"></label></div>
+    <label class="f"><span>Список учнів (ім’я або псевдонім, по одному в рядку)</span><textarea id="sRoster" rows="5">${esc(s.roster.join('\n'))}</textarea></label>
+    <label class="check-row"><input type="checkbox" id="sSound" ${s.sound?'checked':''}> Тихі звуки гри</label>
+    <label class="check-row"><input type="checkbox" id="sVoice" ${s.autoVoice?'checked':''}> Автоматично озвучувати репліки Кекса</label>
+    <label class="check-row"><input type="checkbox" id="sUnlock" ${s.unlockAll?'checked':''}> Відкрити всі справи одразу</label>
+    <label class="f" style="max-width:360px"><span>Новий пароль кабінету (залиште порожнім, щоб не змінювати)</span><input id="sPass" type="password" autocomplete="new-password"></label>
+    <div class="row"><button class="btn" data-act="setSave">Зберегти налаштування</button></div></div>
+    <div class="panel"><h3>Скидання</h3><p class="explain">«Відновити стандартні справи» поверне п’ять справ із концепції (ваші зміни в них зникнуть). «Видалити всі дані» очистить і справи, і статистику учнів.</p><div class="row"><button class="btn secondary" data-act="restoreCases">Відновити стандартні справи</button><button class="btn danger" data-act="resetAll">Видалити всі дані</button></div></div>`;
+}
+function shareHTML(){
+  if(!SHARE_ID || !getCase(SHARE_ID)) SHARE_ID=DB.cases[0]&&DB.cases[0].id;
+  const c=getCase(SHARE_ID);
+  return `<div class="panel"><h3>Поділитися справою з колегою</h3><p class="explain">Скопіюйте код справи й надішліть колезі. Колега вставить його в поле «Додати справу» у своїй грі.</p>
+    <label class="f" style="max-width:420px"><span>Справа</span><select data-change="shareSelect">${DB.cases.map(x=>`<option value="${x.id}" ${x.id===SHARE_ID?'selected':''}>${esc(x.title)}</option>`).join('')}</select></label>
+    <textarea class="code" id="expBox" readonly>${esc(c?JSON.stringify(c,null,1):'')}</textarea><div class="row"><button class="btn small" data-act="copyText" data-src="expBox">📋 Скопіювати код справи</button></div></div>
+    <div class="panel"><h3>Додати справу від колеги</h3><textarea class="code" id="impBox" placeholder="Вставте сюди код справи"></textarea><div class="row"><button class="btn small" data-act="importCase">Додати справу</button></div></div>`;
+}
+
+/* ---- редактор ---- */
+function fInput(label,path,val,o={}){
+  const v=o.list?(val||[]).join('; '):(val??'');
+  const attrs=`data-path="${path}" ${o.list?'data-list="1"':''} ${o.num?'data-num="1" type="number" min="0"':''}`;
+  return `<label class="f"><span>${label}</span>${o.area?`<textarea ${attrs} rows="2">${esc(v)}</textarea>`:`<input ${attrs} value="${esc(v)}">`}</label>`;
+}
+function fSel(label,path,val,pairs,rerender){
+  return `<label class="f" style="flex:0 1 auto"><span>${label}</span><select data-path="${path}" ${rerender?'data-rerender="1"':''}>${pairs.map(([k,l])=>`<option value="${esc(k)}" ${k===val?'selected':''}>${esc(l)}</option>`).join('')}</select></label>`;
+}
+function locPairs(withEmpty){ return (withEmpty?[['','— як у справі —']]:[]).concat(Object.entries(LOC).filter(([k])=>k!=='bureau').map(([k,l])=>[k,`${l.icon} ${l.name}`])); }
+function ensureEdit(){
+  if(!EDIT || !getCase(EDIT_ID)){ EDIT_ID=EDIT_ID&&getCase(EDIT_ID)?EDIT_ID:(DB.cases[0]&&DB.cases[0].id); EDIT=EDIT_ID?clone(getCase(EDIT_ID)):null; }
+}
+function varHTML(si,vi,va){
+  const p=`stages.${si}.variants.${vi}`;
+  va.hints=va.hints||[]; while(va.hints.length<3) va.hints.push('');
+  let tf='';
+  if(va.type==='number') tf=fInput('Правильна відповідь (кілька допустимих — через «;»)',p+'.answers',va.answers,{list:true});
+  else if(va.type==='choice') tf=`<div class="f2">${fInput('Варіанти відповіді (через «;»)',p+'.options',va.options||[],{list:true})}${fInput('Правильний варіант (точно як у списку)',p+'.answers',va.answers,{list:true})}</div>`;
+  else tf=fInput('Картки в правильному порядку (через «;»)',p+'.items',va.items||[],{list:true});
+  return `<div class="var-ed"><div class="var-head"><b style="align-self:center">Варіант ${vi+1}</b>${fSel('Складність',p+'.difficulty',va.difficulty,DIFFS.map(d=>[d,d]))}${fSel('Тип завдання',p+'.type',va.type,Object.entries(TYPES),true)}<button class="btn secondary small" data-act="edDelVar" data-s="${si}" data-v="${vi}">✕ Видалити варіант</button></div>
+    ${fInput('Текст завдання',p+'.task',va.task,{area:true})}${tf}
+    <div class="f3">${fInput('Підказка 1: навідне запитання',p+'.hints.0',va.hints[0],{area:true})}${fInput('Підказка 2: перший крок',p+'.hints.1',va.hints[1],{area:true})}${fInput('Підказка 3: розв’язання',p+'.hints.2',va.hints[2],{area:true})}</div>
+    <div class="f2">${fInput('Схоже завдання для закріплення (необов’язково)',p+'.similar.task',va.similar&&va.similar.task||'')}${fInput('Відповідь до схожого завдання',p+'.similar.answers',va.similar&&va.similar.answers||[],{list:true})}</div></div>`;
+}
+/* ---- простий редактор ---- */
+let SED_DIFF=null, ADV=false, DIRTY=false, PREVIEW_DIFF=null;
+const toTok=s=>String(s||'').replace(/\{addr\}/g,'[напарник]').replace(/\{тобі\}/g,'[тобі]');
+const fromTok=s=>String(s||'').replace(/\[напарни[а-яіїєґ’']*\]/gi,'{addr}').replace(/\[тобі\]/gi,'{тобі}');
+function markDirty(on=true){ DIRTY=on; const n=document.getElementById('dirtyNote'); if(n) n.textContent=on?'Є незбережені зміни':''; }
+function sText(label,path,val,{area=true,tok=false}={}){
+  const v=tok?toTok(val):(val??'');
+  const attrs=`data-path="${path}" ${tok?'data-tok="1"':''}`;
+  return `<label class="f s-f"><span>${label}</span>${area?`<textarea ${attrs} rows="2">${esc(v)}</textarea>`:`<input ${attrs} value="${esc(v)}">`}</label>`;
+}
+function findExpr(t){
+  const m=String(t||'').match(/[\d(][\d\s+\-−×*:·/()]*[\d)]/g)||[];
+  let best=null;
+  for(const raw of m){
+    const x=raw.trim();
+    if(!/[\d)]\s*[+\-−×*:·/]\s*[\d(]/.test(x)) continue;
+    const js=x.replace(/[×·]/g,'*').replace(/:/g,'/').replace(/−/g,'-');
+    if(!/^[\d\s+\-*/().]+$/.test(js)) continue;
+    try{ const val=Function('"use strict";return ('+js+')')(); if(isFinite(val) && (!best || x.length>best.text.length)) best={text:x,val}; }catch(e){}
+  }
+  return best;
+}
+function exprCheck(va,si,vi){
+  if(va.type!=='number') return '';
+  const ans=(va.answers||[])[0]||'';
+  if(String(ans).includes(':')) return `<div class="s-check">🕒 Завдання на час. Відповідь пишіть так, як учень набере її на клавіатурі, наприклад 15:05.</div>`;
+  const e=findExpr(va.task); if(!e) return '';
+  const r=Math.round(e.val*100)/100;
+  if(!String(ans).trim()) return `<div class="s-check warn">🧮 Гра порахувала: ${esc(e.text)} = ${r}. Впишіть правильну відповідь.</div><button class="btn secondary small" data-act="sUseCalc" data-s="${si}" data-v="${vi}" data-r="${r}">Записати ${r} у відповідь</button>`;
+  return norm(ans)===norm(String(r))
+    ? `<div class="s-check ok">✅ Перевірено: ${esc(e.text)} = ${r}. Відповідь правильна.</div>`
+    : `<div class="s-check warn">⚠️ Гра порахувала: ${esc(e.text)} = ${r}, а у відповіді записано ${esc(ans)}. Перевірте, будь ласка.</div><button class="btn secondary small" data-act="sUseCalc" data-s="${si}" data-v="${vi}" data-r="${r}">Записати ${r} у відповідь</button>`;
+}
+function pickEditVariant(s,d){ const i=s.variants.findIndex(x=>x.difficulty===d); return i>=0?i:0; }
+function simpleEditorHTML(){
+  ensureEdit(); if(!EDIT) return `<div class="panel"><p>Справ немає.</p><button class="btn" data-act="restoreCases">Відновити стандартні справи</button></div>`;
+  const c=EDIT, d=SED_DIFF||DB.settings.difficulty, f=c.finale, isDefault=DEFAULT_CASES.some(x=>x.id===c.id);
+  const casePick=`<div class="s-cases">${DB.cases.map(x=>`<button class="s-case ${x.id===EDIT_ID?'on':''}" data-act="sPickCase" data-id="${x.id}"><span>${(LOC[x.location]||LOC.park).icon}</span>${esc(x.title)}</button>`).join('')}</div>`;
+  const diffPick=`<div class="tabs" style="margin:0">${DIFFS.map(x=>`<button class="tab ${x===d?'on':''}" data-act="sDiff" data-d="${x}">${cap(x)} рівень${x===DB.settings.difficulty?' (зараз у класі)':''}</button>`).join('')}</div>`;
+  const stages=c.stages.map((s,si)=>{
+    const vi=pickEditVariant(s,d), va=s.variants[vi], p=`stages.${si}.variants.${vi}`;
+    va.hints=va.hints||[]; while(va.hints.length<3) va.hints.push('');
+    const same=!s.variants.some(x=>x.difficulty===d), extra=s.variants.filter(x=>x.difficulty===d).length-1;
+    const note = same ? `<p class="explain">Це завдання однакове для всіх рівнів складності.</p>` : extra>0 ? `<p class="explain">Для цього рівня є ще ${extra} додаткових прикладів — гра обирає з них випадково. Змінити їх можна в розширеному редакторі.</p>` : '';
+    const task=`<label class="f s-f s-task"><span>Завдання, яке бачить учень</span><textarea data-path="${p}.task" data-chk="${si}.${vi}" rows="3">${esc(va.task)}</textarea></label>`;
+    let body='';
+    if(va.type==='number'){
+      body=`<div class="s-row">${task}<label class="f s-f s-ans"><span>Правильна відповідь</span><input data-path="${p}.answers" data-ans="1" data-chk="${si}.${vi}" value="${esc((va.answers||[])[0]||'')}" autocomplete="off"></label></div><div id="chk-${si}">${exprCheck(va,si,vi)}</div>`;
+    } else if(va.type==='choice'){
+      va.options=va.options||[];
+      body=`${task}<div class="s-opts"><span class="s-lbl">Варіанти відповіді — позначте кружечком правильний</span>${va.options.map((o,k)=>`<label class="s-opt"><input type="radio" name="cor-${si}" data-correct="${si}.${vi}.${k}" ${(va.answers||[])[0]===o?'checked':''} aria-label="Правильний варіант"><input data-opt="${si}.${vi}.${k}" value="${esc(o)}" aria-label="Варіант ${k+1}"></label>`).join('')}</div>`;
+    } else {
+      va.items=va.items||[];
+      body=`${task}<div class="s-opts"><span class="s-lbl">Картки в правильному порядку (гра сама їх перемішає)</span>${va.items.map((o,k)=>`<label class="s-opt"><b>${k+1}.</b><input data-path="${p}.items.${k}" value="${esc(o)}" aria-label="Картка ${k+1}"></label>`).join('')}</div>`;
+    }
+    const hints=`<details class="s-more"><summary>💡 Підказки Кекса (можна не заповнювати)</summary>${sText('Після 1-ї помилки: навідне запитання',p+'.hints.0',va.hints[0])}${sText('Після 2-ї помилки: перший крок',p+'.hints.1',va.hints[1])}${sText('Після 3-ї помилки: повне розв’язання',p+'.hints.2',va.hints[2])}</details>`;
+    const sim=`<details class="s-more"><summary>🔁 Схоже завдання після 3-ї помилки (можна не заповнювати)</summary><div class="s-row"><label class="f s-f s-task"><span>Схоже завдання</span><textarea data-path="${p}.similar.task" rows="2">${esc(va.similar&&va.similar.task||'')}</textarea></label><label class="f s-f s-ans"><span>Відповідь</span><input data-path="${p}.similar.answers" data-ans="1" value="${esc(va.similar&&va.similar.answers&&va.similar.answers[0]||'')}" autocomplete="off"></label></div></details>`;
+    return `<section class="s-stage"><h3><span class="s-num">${si+1}</span> ${s.icon} ${esc(s.evidence)}</h3>${note}${body}${sText('Що знаходить детектив після правильної відповіді',`stages.${si}.result`,s.result,{tok:true})}${hints}${sim}</section>`;
+  }).join('');
+  const suspects = f.type==='suspect' ? `<div class="s-opts"><span class="s-lbl">Підозрювані — позначте кружечком, хто винуватець</span>${f.suspects.map((p,k)=>`<label class="s-opt"><input type="radio" name="culprit" data-culprit="${esc(p.id)}" ${p.id===f.culprit?'checked':''} aria-label="Винуватець"><span class="s-emo">${p.emoji}</span><input data-path="finale.suspects.${k}.name" value="${esc(p.name)}" aria-label="Ім’я підозрюваного ${k+1}"></label>`).join('')}</div>` : '';
+  const bar=`<div class="panel s-bar"><div class="row" style="margin:0"><button class="btn" data-act="sSave">💾 Зберегти зміни</button><button class="btn gold" data-act="edPreview">👀 Подивитися як учень</button>${isDefault?`<button class="btn secondary small" data-act="edReset">Повернути як було</button>`:''}</div><span id="dirtyNote" class="explain">${DIRTY?'Є незбережені зміни':''}</span></div>`;
+  return `<div class="panel"><h3>1. Оберіть справу</h3>${casePick}<h3 style="margin-top:14px">2. Оберіть рівень складності</h3>${diffPick}<p class="explain">Учні бачать завдання того рівня, що позначений «зараз у класі». Змінити його можна в «Налаштуваннях».</p></div>
+    ${bar}
+    <div class="panel"><h3>📖 Сюжет</h3><p class="explain">Слово [напарник] гра сама замінить на «напарнику» чи «напарнице», а [тобі] — на «тобі» чи «вам».</p>${sText('Назва справи','title',c.title,{area:false})}${sText('Що Кекс каже на початку справи','intro',c.intro,{tok:true})}</div>
+    <h3>🔍 Етапи розслідування</h3><p class="explain">Змініть текст завдання й відповідь. Якщо в завданні є приклад, гра сама його порахує і перевірить вашу відповідь.</p>
+    ${stages}
+    <div class="panel"><h3>🎉 Розв’язка</h3>${suspects}${sText('Що відбувається, коли справу розкрито','finale.reveal',f.reveal,{tok:true})}${sText('Чим Кекс хвалить учня наприкінці','skill',c.skill,{tok:true})}</div>
+    <div class="row"><button class="btn" data-act="sSave">💾 Зберегти зміни</button><button class="btn secondary small" data-act="advToggle">Розширений редактор (для досвідчених)</button></div>`;
+}
+function editorHTML(){
+  ensureEdit(); if(!EDIT) return `<div class="panel"><p>Справ немає.</p><button class="btn" data-act="restoreCases">Відновити стандартні справи</button></div>`;
+  const c=EDIT, isDefault=DEFAULT_CASES.some(d=>d.id===c.id), f=c.finale;
+  const stages=c.stages.map((s,si)=>`<fieldset class="stage-ed"><legend>Етап ${si+1}: ${esc(s.evidence||'')}</legend>
+      <div class="frow">${fInput('Назва доказу',`stages.${si}.evidence`,s.evidence)}${fInput('Значок доказу (емодзі)',`stages.${si}.icon`,s.icon)}${fSel('Локація етапу',`stages.${si}.location`,s.location||'',locPairs(true))}</div>
+      ${fInput('Що відкриває правильна відповідь (текст доказу)',`stages.${si}.result`,s.result,{area:true})}
+      ${s.variants.map((va,vi)=>varHTML(si,vi,va)).join('')}
+      <div class="row"><button class="btn secondary small" data-act="edAddVar" data-s="${si}">+ Додати варіант завдання</button><button class="btn secondary small" data-act="edDelStage" data-s="${si}">✕ Видалити етап</button></div></fieldset>`).join('');
+  let fin='';
+  if(f.type==='suspect'){
+    fin=`<div class="frow">${f.suspects.map((p,k)=>`<div class="var-ed" style="flex:1;min-width:220px">${fInput('Емодзі',`finale.suspects.${k}.emoji`,p.emoji)}${fInput('Ім’я підозрюваного',`finale.suspects.${k}.name`,p.name)}<button class="btn secondary small" data-act="edDelSus" data-k="${k}">✕ Прибрати</button></div>`).join('')}</div>
+      <div class="row"><button class="btn secondary small" data-act="edAddSus">+ Додати підозрюваного</button></div>
+      <div class="frow">${fSel('Хто винуватець',`finale.culprit`,f.culprit,f.suspects.map(p=>[p.id,p.name||'(без імені)']))}${fInput('Хибні докази для пояснення «Логік» (через «;»)','finale.fakeProofs',f.fakeProofs||[],{list:true})}</div>`;
+  } else fin=fInput('Емодзі героя розв’язки','finale.emoji',f.emoji||'');
+  return `<div class="panel"><div class="frow" style="align-items:flex-end">
+      <label class="f" style="max-width:420px"><span>Справа для редагування</span><select data-change="edSelect">${DB.cases.map(x=>`<option value="${x.id}" ${x.id===EDIT_ID?'selected':''}>${esc(x.title)}</option>`).join('')}</select></label>
+      <button class="btn" data-act="edSave">💾 Зберегти</button><button class="btn gold" data-act="edPreview">👀 Як бачить учень</button><button class="btn secondary small" data-act="edCopy">Створити копію</button>
+      ${isDefault?`<button class="btn secondary small" data-act="edReset">Повернути як було</button>`:`<button class="btn secondary small" data-act="edDelete">Видалити справу</button>`}</div>
+    <p class="explain">Змініть завдання під свій урок і натисніть «Зберегти». У кожному етапі може бути кілька варіантів: гра бере варіант тієї складності, що обрана в налаштуваннях, а якщо їх кілька — випадковий. Порожні підказки гра замінить загальними.</p></div>
+    <div class="panel"><h3>Загальне</h3><div class="frow">${fInput('Назва справи','title',c.title)}${fInput('Клас','grade',c.grade||'')}${fSel('Локація',`location`,c.location,locPairs(false))}${fInput('Відкривається після скількох розкритих справ','unlockAfter',c.unlockAfter||0,{num:true})}</div>
+      ${fInput('Вступ Кекса ({addr} — звертання «напарнику/напарнице»)','intro',c.intro,{area:true})}
+      ${fInput('Підсумок уміння в кінці справи ({тобі} — «тобі/вам»)','skill',c.skill,{area:true})}
+      <div class="frow">${fInput('Значок за справу','badge',c.badge)}${fInput('Емодзі значка','badgeIcon',c.badgeIcon)}</div></div>
+    <div class="panel"><h3>Етапи</h3>${stages}<div class="row"><button class="btn secondary" data-act="edAddStage">+ Додати етап</button></div></div>
+    <div class="panel"><h3>Генератор схожих прикладів</h3><p class="explain">Додає до етапу нові варіанти, щоб справа не була «завченою». Підказки створюються автоматично. Перевірте, щоб текст доказу цього етапу не згадував конкретну відповідь.</p>
+      <div class="frow" style="align-items:flex-end">
+        <label class="f"><span>Етап</span><select id="gStage">${c.stages.map((s,i)=>`<option value="${i}">${i+1}. ${esc(s.evidence)}</option>`).join('')}</select></label>
+        <label class="f"><span>Шаблон</span><select id="gTpl">${Object.entries(GEN).map(([k,t])=>`<option value="${k}">${esc(t.label)}</option>`).join('')}</select></label>
+        <label class="f" style="max-width:200px"><span>Складність</span><select id="gDiff">${DIFFS.map(d=>`<option ${d===DB.settings.difficulty?'selected':''}>${d}</option>`).join('')}</select></label>
+        <label class="f" style="max-width:140px"><span>Скільки</span><input id="gCount" type="number" min="1" max="10" value="3"></label>
+        <button class="btn" data-act="edGen">Додати приклади</button></div></div>
+    <div class="panel"><h3>Розв’язка</h3><div class="frow">${fSel('Як закінчується справа','finale.type',f.type,[['suspect','Учень обирає винуватця'],['story','Розповідь без винуватця']],true)}</div>
+      ${fInput('Текст розв’язки','finale.reveal',f.reveal,{area:true})}${fin}
+      <div class="row"><button class="btn" data-act="edSave">💾 Зберегти справу</button></div></div>`;
+}
+const GEN={
+  add_nc:{label:'Двоцифрове + двоцифрове без переходу через десяток',make(){ const a1=rnd(1,7),a2=rnd(0,8),b1=rnd(1,8-a1),b2=rnd(0,9-a2),a=a1*10+a2,b=b1*10+b2; return {task:`${a} + ${b} = ?`,ans:a+b,hints:['Додай окремо десятки й окремо одиниці.',`Десятки: ${a1*10} + ${b1*10} = ${(a1+b1)*10}. Одиниці: ${a2} + ${b2} = ${a2+b2}.`,`${(a1+b1)*10} + ${a2+b2} = ${a+b}.`]}; }},
+  sub_nc:{label:'Двоцифрове − двоцифрове без переходу через десяток',make(){ const a1=rnd(3,9),b1=rnd(1,a1-1),a2=rnd(1,9),b2=rnd(0,a2),a=a1*10+a2,b=b1*10+b2; return {task:`${a} − ${b} = ?`,ans:a-b,hints:['Відніми окремо десятки й окремо одиниці.',`Десятки: ${a1*10} − ${b1*10} = ${(a1-b1)*10}. Одиниці: ${a2} − ${b2} = ${a2-b2}.`,`${(a1-b1)*10} + ${a2-b2} = ${a-b}.`]}; }},
+  add_c:{label:'Двоцифрове + двоцифрове з переходом через десяток',make(){ const a2=rnd(2,9),b2=rnd(10-a2,9),a1=rnd(1,6),b1=rnd(1,8-a1),a=a1*10+a2,b=b1*10+b2; return {task:`${a} + ${b} = ?`,ans:a+b,hints:['Спершу додай десятки, а потім одиниці.',`${a} + ${b1*10} = ${a+b1*10}. Тепер додай ${b2}.`,`${a+b1*10} + ${b2} = ${a+b}.`]}; }},
+  mul:{label:'Табличне множення',make(){ const a=rnd(2,9),b=rnd(2,9); return {task:`${a} × ${b} = ?`,ans:a*b,hints:[`Згадай таблицю множення на ${a}.`,`${a} × ${b} — це ${b} разів по ${a}.`,`${a} × ${b} = ${a*b}.`]}; }},
+  div:{label:'Табличне ділення',make(){ const b=rnd(2,9),q=rnd(2,9),a=b*q; return {task:`${a} : ${b} = ?`,ans:q,hints:[`Яке число треба помножити на ${b}, щоб отримати ${a}?`,`${b} × ? = ${a}`,`${a} : ${b} = ${q}, бо ${b} × ${q} = ${a}.`]}; }},
+  mixed:{label:'Вираз із двома діями (множення і віднімання)',make(){ const a=rnd(2,9),b=rnd(2,9),c=rnd(1,a*b-1); return {task:`${a} × ${b} − ${c} = ?`,ans:a*b-c,hints:['Що виконуємо першим — множення чи віднімання?',`${a} × ${b} = ${a*b}. Тепер ${a*b} − ${c} = ?`,`${a*b} − ${c} = ${a*b-c}.`]}; }}
+};
+function validateCase(c){
+  const errs=[];
+  if(!String(c.title||'').trim()) errs.push('Немає назви справи.');
+  if(!c.stages.length) errs.push('Потрібен хоча б один етап.');
+  c.stages.forEach((s,i)=>{
+    if(!String(s.evidence||'').trim()) errs.push(`Етап ${i+1}: немає назви доказу.`);
+    if(!s.variants.length) errs.push(`Етап ${i+1}: немає жодного варіанта завдання.`);
+    s.variants.forEach((va,j)=>{
+      const t=`Етап ${i+1} (${va.difficulty} рівень)`;
+      if(!String(va.task||'').trim()) errs.push(`${t}: немає тексту завдання.`);
+      if(va.type==='number'&&!(va.answers||[]).length) errs.push(`${t}: немає правильної відповіді.`);
+      if(va.type==='choice'){ if((va.options||[]).length<2) errs.push(`${t}: потрібно щонайменше 2 варіанти відповіді.`); else if(!(va.answers||[]).length||!va.answers.every(a=>va.options.includes(a))) errs.push(`${t}: позначте правильний варіант відповіді.`); }
+      if(va.type==='order'&&(va.items||[]).length<2) errs.push(`${t}: потрібно щонайменше 2 картки.`);
+      if(va.similar&&va.similar.task&&!(va.similar.answers||[]).length) errs.push(`${t}: у схожого завдання немає відповіді.`);
+    });
+  });
+  if(c.finale.type==='suspect'){ if((c.finale.suspects||[]).length<2) errs.push('Потрібно щонайменше 2 підозрюваних.'); else if(!c.finale.suspects.some(s=>s.id===c.finale.culprit)) errs.push('Оберіть винуватця.'); }
+  return errs;
+}
+function tidyCase(c){
+  c.stages.forEach(s=>{ if(!s.location) delete s.location; s.variants.forEach(va=>{ if(va.similar&&!String(va.similar.task||'').trim()) va.similar=null; if(va.type==='choice') va.options=va.options||[]; if(va.type==='order'){ va.items=va.items||[]; va.answers=[]; } }); });
+  if(c.finale.type==='suspect'){ c.finale.suspects=c.finale.suspects||[]; c.finale.fakeProofs=c.finale.fakeProofs||[]; }
+  return c;
+}
+function saveEdit(){
+  tidyCase(EDIT);
+  const errs=validateCase(EDIT);
+  if(errs.length){ modal(`<h2>Перевірте справу</h2><ul>${errs.map(e=>`<li>${esc(e)}</li>`).join('')}</ul><div class="modal-actions"><button class="btn" data-act="closeModal">Добре</button></div>`); return false; }
+  const i=DB.cases.findIndex(x=>x.id===EDIT_ID); if(i>=0) DB.cases[i]=clone(EDIT); markShared(); markDirty(false); return true;
+}
+function setPath(obj,path,val){ const ks=path.split('.'); let o=obj; for(let i=0;i<ks.length-1;i++){ if(o[ks[i]]==null) o[ks[i]]={}; o=o[ks[i]]; } o[last(ks)]=val; }
+function readField(t){ let val=t.value; if(t.dataset.ans){ const v=val.trim(); return v ? (v.includes(':')?[v,v.replace(':','')]:[v]) : []; } if(t.dataset.tok) return fromTok(val); if(t.dataset.list) val=val.split(';').map(s=>s.trim()).filter(Boolean); if(t.dataset.num) val=Math.max(0,parseInt(val,10)||0); return val; }
+
+/* ================= ДІЇ ================= */
+const ACT={
+  login(){ doLogin((document.getElementById('nm')||{}).value); },
+  gender(el){ LOGIN_G=el.dataset.g; LOGIN_G_TOUCHED=true; document.querySelectorAll('[data-act="gender"]').forEach(b=>b.classList.toggle('sel',b===el)); },
+  quickLogin(el){ doLogin(el.dataset.name); },
+  classLogin(){ LOGIN_G='p'; LOGIN_G_TOUCHED=true; doLogin('Клас'); },
+  logout(){ stopSpeak(); const pub = IN_TEACHER && DB.pending; renderLogin(); if(pub) publishShared(false); },
+  cloudSave(){ publishShared(true); },
+  ghSaveTok(){ const v=((document.getElementById('ghTok')||{}).value||'').trim(); if(!v){ toast('Вставте ключ доступу'); return; } try{ localStorage.setItem('kex-gh-token', v); }catch(e){} toast('Ключ збережено на цьому пристрої'); renderTeacher(true); },
+  ghClearTok(){ try{ localStorage.removeItem('kex-gh-token'); }catch(e){} toast('Ключ видалено'); renderTeacher(true); },
+  teacherOpen(){ modal(`<h2>🔒 Кабінет учителя</h2><label class="f"><span>Пароль</span><input id="tp" type="password" autocomplete="current-password"></label><p class="explain">Пароль за замовчуванням — 1234. Змініть його в налаштуваннях.</p><div class="modal-actions"><button class="btn" data-act="teacherEnter">Увійти</button><button class="btn secondary" data-act="closeModal">Скасувати</button></div>`); const tp=document.getElementById('tp'); tp.focus(); tp.addEventListener('keydown',e=>{ if(e.key==='Enter') ACT.teacherEnter(); }); },
+  async teacherEnter(){ const v=(document.getElementById('tp')||{}).value||''; const ok = DB.settings.passHash ? (await sha256(v))===DB.settings.passHash : v===DB.settings.password; if(ok){ closeModal(); TTAB='stats'; EDIT=null; renderTeacher(); } else toast('Пароль не збігається'); },
+  closeModal(){ closeModal(); },
+  overlayClick(el,e){ if(e.target===el && !(RUN && RUN.phase!=='done' && document.querySelector('[data-act="resumePause"]'))) closeModal(); },
+  openCase(el){ const c=getCase(el.dataset.id); if(!c) return; if(!caseUnlocked(c)){ toast(`Ця справа відкриється ${unlockText(c.unlockAfter||0)}. Кекс уже готує лупу!`); return; } renderIntro(c.id); },
+  startNew(el){ startCase(el.dataset.id,false); },
+  resume(el){ startCase(el.dataset.id,true); },
+  back(){ goHome(); },
+  home(){ accTime(); goHome(); },
+  journal(){ stopSpeak(); renderJournal(); },
+  awards(){ stopSpeak(); renderAwards(); },
+  pause(){ clearTimeout(IDLE); accTime(); stopSpeak(); modal(`<h2>⏸ Пауза</h2><p>Прогрес збережено — справу можна продовжити й на наступному уроці.</p><div class="modal-actions"><button class="btn big" data-act="resumePause">Продовжити</button><button class="btn secondary" data-act="home">${RUN&&RUN.preview?'До кабінету':'До бюро'}</button><button class="btn secondary" data-act="toggleSound">${DB.settings.sound?'🔈 Вимкнути звуки':'🔊 Увімкнути звуки'}</button></div>`); },
+  resumePause(){ closeModal(); if(RUN){ RUN.segStart=Date.now(); armIdle(); } },
+  toggleSound(el){ DB.settings.sound=!DB.settings.sound; saveDB(); el.textContent=DB.settings.sound?'🔈 Вимкнути звуки':'🔊 Увімкнути звуки'; },
+  speakBubble(){ speak(SAY); },
+  voice(){ if(!RUN) return; let t=SAY; const s=RUN.c.stages[RUN.stageIdx];
+    if(RUN.phase==='task'||RUN.phase==='similar'){ const v=RUN.v; t+='. '+fill(RUN.phase==='similar'?v.similar.task:v.task); if(v.type==='choice'&&RUN.phase==='task') t+='. Варіанти: '+v.options.join(', '); if(RUN.hintLevel) t+='. Підказка: '+fill(hintText(v,RUN.hintLevel-1)); }
+    else if(RUN.phase==='evidence' && s) t+='. '+s.evidence+'. '+fill(s.result);
+    speak(t); },
+  key(el){ const inp=document.getElementById('ans'); if(!inp) return; const k=el.dataset.k; if(k==='⌫') inp.value=inp.value.slice(0,-1); else if(inp.value.length<8) inp.value+=k; RUN.draft=inp.value; sfx.tap(); },
+  check(){ check(); },
+  choose(el){ const i=+el.dataset.i; if(RUN.dimmed.includes(i)) return; const v=RUN.v; if((v.answers||[]).map(norm).includes(norm(v.options[i]))) onCorrect(); else { RUN.dimmed.push(i); onWrong(); } },
+  orderPick(el){ const i=+el.dataset.i; if(!RUN.orderSel.includes(i)){ RUN.orderSel.push(i); sfx.tap(); renderStage(true); } },
+  orderClear(){ RUN.orderSel=[]; renderStage(true); },
+  lupa(){ if(!RUN||(RUN.phase!=='task'&&RUN.phase!=='similar')) return;
+    if(RUN.hintLevel>=3){ RUN.mood='support'; RUN.say=`Усі підказки вже тут. ${g('Ти впораєшся','Ти впораєшся','Ви впораєтеся')}!`; return renderStage(true); }
+    const lvl=RUN.hintLevel+1; raiseHint(lvl,'lupa'); RUN.mood='attentive';
+    RUN.say=['','Гм… Ось моє навідне запитання.','Покажу перший крок.','Розберімо разом крок за кроком.'][lvl];
+    if(lvl===3 && RUN.phase==='task' && simOK(RUN.v)){ RUN.phase='similar'; RUN.draft=''; RUN.say+=' А тепер — схоже завдання!'; }
+    renderStage(true); autoSpeak(); },
+  forceNext(){ onCorrect(); },
+  nextStage(){ RUN.stageIdx++; if(RUN.stageIdx<RUN.c.stages.length) loadStage(); else goFinale(); },
+  pickSuspect(el){ const p=RUN.c.finale.suspects.find(s=>s.id===el.dataset.id); if(!p) return; modal(`<div style="text-align:center"><div style="font-size:72px">${p.emoji}</div><h2>${g('Ти впевнений','Ти впевнена','Ви впевнені')}, що це ${esc(p.name)}?</h2><p>Можна ще раз переглянути сумку доказів.</p></div><div class="modal-actions" style="justify-content:center"><button class="btn big" data-act="confirmSuspect" data-id="${esc(p.id)}">Так, розкрити справу!</button><button class="btn secondary" data-act="closeModal">Ще подумаю</button></div>`); },
+  confirmSuspect(el){ closeModal(); const f=RUN.c.finale;
+    if(el.dataset.id===f.culprit){ RUN.proofOpts=null; renderExplain(); }
+    else { if(!RUN.wrongSus.includes(el.dataset.id)) RUN.wrongSus.push(el.dataset.id); statsOf(RUN.caseId).culpritTries++; RUN.mood='support'; RUN.say='Гм, це не збігається з доказами. Перечитаймо сумку доказів разом.'; renderSuspects(true); autoSpeak(); } },
+  proofToggle(el){ const i=+el.dataset.i; const k=RUN.proofSel.indexOf(i); if(k>=0) RUN.proofSel.splice(k,1); else RUN.proofSel.push(i); el.classList.toggle('sel'); el.setAttribute('aria-pressed',RUN.proofSel.includes(i)); },
+  explainDone(){
+    if(RUN.proofSel.length<2){ toast('Обери хоча б два докази'); return; }
+    const proofs=RUN.c.stages.map(s=>s.evidence); const sel=RUN.proofSel.map(i=>RUN.proofOpts[i]);
+    const ok=sel.every(t=>proofs.includes(t));
+    RUN.explainMsg = ok ? `${g('Ти міркуєш','Ти міркуєш','Ви міркуєте')} як справжній детектив! Кожен обраний доказ — із нашої сумки.` : 'Частини цих речей не було в нашій сумці доказів. Але винуватця знайдено правильно!';
+    solveCase(ok);
+  },
+  ttab(el){ TTAB=el.dataset.t; renderTeacher(); },
+  edAddVar(el){ const s=EDIT.stages[+el.dataset.s]; const base=s.variants[0]; s.variants.push(base?Object.assign(clone(base),{task:'',answers:[],hints:['','',''],similar:null}):V(DB.settings.difficulty,'number','',[],['','',''])); renderTeacher(true); },
+  edDelVar(el){ const s=EDIT.stages[+el.dataset.s]; if(s.variants.length<=1){ toast('У етапі має лишитися хоча б один варіант'); return; } s.variants.splice(+el.dataset.v,1); renderTeacher(true); },
+  edAddStage(){ EDIT.stages.push({evidence:'Новий доказ',icon:'🔎',result:'',variants:[V(DB.settings.difficulty,'number','',[],['','',''])]}); renderTeacher(true); },
+  edDelStage(el){ if(EDIT.stages.length<=1){ toast('У справі має лишитися хоча б один етап'); return; } EDIT.stages.splice(+el.dataset.s,1); renderTeacher(true); },
+  edAddSus(){ EDIT.finale.suspects.push({id:'s'+Date.now().toString(36),emoji:'🐾',name:''}); renderTeacher(true); },
+  edDelSus(el){ const sus=EDIT.finale.suspects; if(sus.length<=2){ toast('Потрібно щонайменше 2 підозрюваних'); return; } const [rm]=sus.splice(+el.dataset.k,1); if(rm&&rm.id===EDIT.finale.culprit) EDIT.finale.culprit=sus[0].id; renderTeacher(true); },
+  edSave(){ if(saveEdit()) toast('Справу збережено'); },
+  sSave(){ if(saveEdit()) toast('Зміни збережено'); },
+  sPickCase(el){ if(el.dataset.id===EDIT_ID) return; if(DIRTY){ modal(`<h2>Зберегти зміни?</h2><p>У справі «${esc(EDIT.title)}» є незбережені зміни.</p><div class="modal-actions"><button class="btn" data-act="sSaveGo" data-id="${el.dataset.id}">Зберегти й перейти</button><button class="btn secondary" data-act="sGo" data-id="${el.dataset.id}">Не зберігати</button><button class="btn secondary" data-act="closeModal">Скасувати</button></div>`); return; } ACT.sGo(el); },
+  sSaveGo(el){ closeModal(); if(saveEdit()) ACT.sGo(el); },
+  sGo(el){ closeModal(); EDIT_ID=el.dataset.id; EDIT=clone(getCase(EDIT_ID)); DIRTY=false; renderTeacher(true); },
+  sDiff(el){ SED_DIFF=el.dataset.d; renderTeacher(true); },
+  sUseCalc(el){ const va=EDIT.stages[+el.dataset.s].variants[+el.dataset.v]; va.answers=[el.dataset.r]; DIRTY=true; renderTeacher(true); },
+  advToggle(){ ADV=!ADV; renderTeacher(); },
+  edPreview(){ if(!saveEdit()) return; PREVIEW_DIFF=ADV?null:(SED_DIFF||DB.settings.difficulty); ME=newStudent('Перегляд','m'); ME.temp=true; startCase(EDIT_ID,false,true); },
+  edCopy(){ if(!saveEdit()) return; const c=clone(EDIT); c.id='c'+Date.now().toString(36); c.title+=' (копія)'; c.unlockAfter=0; DB.cases.push(c); markShared(); EDIT_ID=c.id; EDIT=clone(c); renderTeacher(); toast('Копію створено — тепер ви редагуєте її'); },
+  edReset(){ const d=DEFAULT_CASES.find(x=>x.id===EDIT_ID); if(!d) return; const i=DB.cases.findIndex(x=>x.id===EDIT_ID); DB.cases[i]=clone(d); markShared(); EDIT=clone(d); DIRTY=false; renderTeacher(true); toast('Справу повернуто до стандартної'); },
+  edDelete(){ modal(`<h2>Видалити справу «${esc(EDIT.title)}»?</h2><p>Її не можна буде відновити.</p><div class="modal-actions"><button class="btn danger" data-act="edDeleteYes">Видалити</button><button class="btn secondary" data-act="closeModal">Скасувати</button></div>`); },
+  edDeleteYes(){ DB.cases=DB.cases.filter(x=>x.id!==EDIT_ID); markShared(); closeModal(); EDIT=null; EDIT_ID=null; renderTeacher(); toast('Справу видалено'); },
+  edGen(){ const si=+document.getElementById('gStage').value, tpl=GEN[document.getElementById('gTpl').value], diff=document.getElementById('gDiff').value, n=Math.max(1,Math.min(10,+document.getElementById('gCount').value||3));
+    for(let i=0;i<n;i++){ const a=tpl.make(), b=tpl.make(); EDIT.stages[si].variants.push(V(diff,'number',a.task,[String(a.ans)],a.hints,{similar:SIM('Схоже завдання: '+b.task,[String(b.ans)])})); }
+    renderTeacher(true); toast(`Додано прикладів: ${n}. Не забудьте зберегти справу`); },
+  async setSave(){ const s=DB.settings; s.difficulty=document.getElementById('sDiff').value; s.mode=document.getElementById('sMode').value; s.classGoal=Math.max(1,parseInt(document.getElementById('sGoal').value,10)||8);
+    s.roster=document.getElementById('sRoster').value.split('\n').map(x=>x.trim().slice(0,30)).filter(Boolean); s.sound=document.getElementById('sSound').checked; s.autoVoice=document.getElementById('sVoice').checked; s.unlockAll=document.getElementById('sUnlock').checked;
+    const p=document.getElementById('sPass').value; if(p){ s.password=p; s.passHash=await sha256(p); } markShared(); toast('Налаштування збережено'); renderTeacher(true); },
+  restoreCases(){ modal(`<h2>Відновити стандартні справи?</h2><p>П’ять справ із концепції повернуться до початкового вигляду. Ваші власні справи-копії залишаться.</p><div class="modal-actions"><button class="btn" data-act="restoreYes">Відновити</button><button class="btn secondary" data-act="closeModal">Скасувати</button></div>`); },
+  restoreYes(){ DEFAULT_CASES.forEach(d=>{ const i=DB.cases.findIndex(x=>x.id===d.id); if(i>=0) DB.cases[i]=clone(d); else DB.cases.push(clone(d)); }); markShared(); EDIT=null; closeModal(); renderTeacher(); toast('Стандартні справи відновлено'); },
+  resetAll(){ modal(`<h2>Видалити всі дані?</h2><p>Зникнуть статистика всіх учнів, налаштування й змінені справи. Цю дію не можна скасувати.</p><div class="modal-actions"><button class="btn danger" data-act="resetAllYes">Видалити все</button><button class="btn secondary" data-act="closeModal">Скасувати</button></div>`); },
+  resetAllYes(){ DB=freshDB(); markShared(); EDIT=null; closeModal(); renderLogin(); toast('Усі дані видалено'); },
+  delStudent(el){ const st=DB.students[el.dataset.k]; if(!st) return; modal(`<h2>Видалити дані учня «${esc(st.name)}»?</h2><div class="modal-actions"><button class="btn danger" data-act="delStudentYes" data-k="${esc(el.dataset.k)}">Видалити</button><button class="btn secondary" data-act="closeModal">Скасувати</button></div>`); },
+  delStudentYes(el){ delete DB.students[el.dataset.k]; saveDB(); closeModal(); renderTeacher(true); },
+  copyText(el){ const box=document.getElementById(el.dataset.src); if(!box) return; const done=()=>toast('Скопійовано');
+    if(navigator.clipboard&&navigator.clipboard.writeText) navigator.clipboard.writeText(box.value).then(done,()=>{ box.select(); try{ document.execCommand('copy'); done(); }catch(e){ toast('Виділіть текст і скопіюйте вручну'); } });
+    else { box.select(); try{ document.execCommand('copy'); done(); }catch(e){ toast('Виділіть текст і скопіюйте вручну'); } } },
+  importCase(){ const raw=document.getElementById('impBox').value.trim(); if(!raw){ toast('Вставте код справи'); return; }
+    let c; try{ c=JSON.parse(raw); }catch(e){ toast('Код справи пошкоджений — скопіюйте його ще раз'); return; }
+    if(!c||!c.title||!Array.isArray(c.stages)||!c.finale){ toast('Це не схоже на код справи'); return; }
+    c.id='c'+Date.now().toString(36); c.unlockAfter=c.unlockAfter||0; if(!LOC[c.location]) c.location='park';
+    const errs=validateCase(tidyCase(c)); if(errs.length){ toast('У справі є помилки: '+errs[0]); return; }
+    DB.cases.push(c); markShared(); SHARE_ID=c.id; renderTeacher(); toast(`Справу «${c.title}» додано`); }
+};
+const CHG={
+  edSelect(t){ EDIT_ID=t.value; EDIT=clone(getCase(EDIT_ID)); renderTeacher(true); },
+  shareSelect(t){ SHARE_ID=t.value; renderTeacher(true); }
+};
+
+document.addEventListener('click',e=>{ const el=e.target.closest('[data-act]'); if(!el || el.disabled || el.getAttribute('aria-disabled')==='true' && el.dataset.act!=='openCase') return; const fn=ACT[el.dataset.act]; if(fn) fn(el,e); });
+document.addEventListener('input',e=>{ const t=e.target;
+  if(t.dataset && t.dataset.path && EDIT && TTAB==='cases'){ setPath(EDIT,t.dataset.path,readField(t)); markDirty(); }
+  if(t.dataset && t.dataset.chk && EDIT){ const [si,vi]=t.dataset.chk.split('.').map(Number); const box=document.getElementById('chk-'+si); if(box) box.innerHTML=exprCheck(EDIT.stages[si].variants[vi],si,vi); }
+  if(t.dataset && t.dataset.opt && EDIT){ const [si,vi,k]=t.dataset.opt.split('.').map(Number); const va=EDIT.stages[si].variants[vi]; const was=(va.answers||[])[0]===va.options[k]; va.options[k]=t.value; if(was) va.answers=[t.value]; markDirty(); }
+  if(t.id==='ans' && RUN){ RUN.draft=t.value; armIdle(); } });
+document.addEventListener('change',e=>{ const t=e.target;
+  if(t.dataset && t.dataset.path && EDIT && TTAB==='cases'){ setPath(EDIT,t.dataset.path,readField(t));
+    if(t.dataset.rerender){ if(t.dataset.path==='finale.type' && EDIT.finale.type==='suspect'){ EDIT.finale.suspects=EDIT.finale.suspects&&EDIT.finale.suspects.length?EDIT.finale.suspects:[{id:'s1',emoji:'🦊',name:'Підозрюваний 1'},{id:'s2',emoji:'🐻',name:'Підозрюваний 2'}]; EDIT.finale.culprit=EDIT.finale.culprit||EDIT.finale.suspects[0].id; EDIT.finale.fakeProofs=EDIT.finale.fakeProofs||[]; } renderTeacher(true); } }
+  if(t.dataset && t.dataset.correct && EDIT){ const [si,vi,k]=t.dataset.correct.split('.').map(Number); const va=EDIT.stages[si].variants[vi]; va.answers=[va.options[k]]; markDirty(); }
+  if(t.dataset && t.dataset.culprit && EDIT){ EDIT.finale.culprit=t.dataset.culprit; markDirty(); }
+  if(t.dataset && t.dataset.change && CHG[t.dataset.change]) CHG[t.dataset.change](t); });
+document.addEventListener('keydown',e=>{ if(e.key==='Escape' && document.querySelector('.overlay') && !document.querySelector('[data-act="resumePause"]')) closeModal(); });
+window.addEventListener('pagehide',()=>{ if(RUN && !RUN.preview) accTime(); });
+if('speechSynthesis' in window){ try{ speechSynthesis.getVoices(); speechSynthesis.onvoiceschanged=()=>speechSynthesis.getVoices(); }catch(e){} }
+
+(async function boot(){ await loadRemote(); let s=null; try{ s=JSON.parse(sessionStorage.getItem('kexTeacher')||'null'); sessionStorage.removeItem('kexTeacher'); }catch(e){}
+  if(s && Date.now()-s.t<120000){ TTAB=s.tab||'stats'; EDIT=null; renderTeacher(); } else renderLogin(); })();
+</script>
+</body>
+</html>
